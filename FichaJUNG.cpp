@@ -4,6 +4,8 @@
 #include <iostream>
 #include <sstream>
 #include "Graph.h"
+
+
 using namespace std;
 
 struct VertexInfo{
@@ -15,11 +17,11 @@ struct VertexInfo{
 
 void printGraph();
 
-void initialise();
+void initialise(Graph<VertexInfo> &g);
 
-void initialise(){
+void initialise(Graph<VertexInfo> &g){
 
-	Graph<VertexInfo> g;
+	//Graph<VertexInfo> g;
 
 	ifstream inFile;
 
@@ -183,7 +185,7 @@ void printGraph()
 		linestream >> idNoOrigem;
 		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
 		linestream >> idNoDestino;
-		gv->addEdge(idAresta,idNoOrigem,idNoDestino, EdgeType::UNDIRECTED);
+		gv->addEdge(idAresta,idNoOrigem,idNoDestino, EdgeType::DIRECTED);
 
 	}
 
@@ -191,10 +193,27 @@ void printGraph()
 
 	gv->rearrange();
 }
-
+void showOptions(Graph<VertexInfo> &g){
+	int a= 0;
+	for(unsigned int i =0; i < g.getVertexSet().size(); i++){
+	    	if(g.getVertexSet()[i]->getInfo().label != "garage" && g.getVertexSet()[i]->getInfo().label != "crossroad" && g.getVertexSet()[i]->getInfo().label != "parking lot"){
+	          cout << a++ << " " <<  g.getVertexSet()[i]->getInfo().label << " x: "<< g.getVertexSet()[i]->getInfo().X << " y: "<<  g.getVertexSet()[i]->getInfo().Y<< "\n";
+	    	}
+	    }
+}
 int main() {
-	initialise();
+	Graph<VertexInfo> g;
+	int location, destination, gas;
+	initialise(g);
 	printGraph();
+	cout << "Good day \n" << "Where are you?";
+    showOptions(g);
+	cin >> location;
+	cout << "Where are you headed? \n";
+    showOptions(g);
+	cin >> destination;
+	cout << "Do you wish to refill?\n1-Yes \n2-No \n";
+	cin >> gas;
 	getchar();
 	return 0;
 }
