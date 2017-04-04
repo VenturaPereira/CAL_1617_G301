@@ -19,7 +19,7 @@ void initialise();
 
 void initialise(){
 
-	Graph<VertexInfo>* g;
+	Graph<VertexInfo> g;
 
 	ifstream inFile;
 
@@ -31,30 +31,29 @@ void initialise(){
 		exit(1);   // call system to stop
 	}
 
-	string line;
+	string line, label,x,y,id;
+
+	getline(inFile, id, ';');
+	getline(inFile, x, ';');
+	getline(inFile, y, ';');
+	getline(inFile, label, ';');
 
 	//each node will be in this format: id;x;y;label
-	while(getline(inFile, line))
+	while(inFile)
 	{
 		VertexInfo v;
-		stringstream linestream(line);
-		string data, label;
-		linestream >> v.idNo;
+		v.idNo = stoi(id);
+		v.X = stoi(x);
+		v.Y = stoi(y);
+		v.label = label;
 
-		cout << v.idNo << endl;
-		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
-		linestream >> v.X;
+		g.addVertex(v);
 
-		cout << v.X << endl;
-		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
-		linestream >> v.Y;
-
-		cout << v.Y << endl;
-		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
-		linestream >> v.label;
-		g->addVertex(v);
+		getline(inFile, id, ';');
+		getline(inFile, x, ';');
+		getline(inFile, y, ';');
+		getline(inFile, label, ';');
 	}
-
 	inFile.close();
 
 	//Ler o ficheiro arestas.txt
@@ -66,34 +65,52 @@ void initialise(){
 		exit(1);   // call system to stop
 	}
 
-	vector<VertexInfo> vertices = g->dfs();
-	//each line in the format: idEdge;idSource;idDest;weight
-	while(getline(inFile, line))
-	{
-		stringstream linestream(line);
-		string data;
-		int idAresta=0;
-		int idNoOrigem=0;
-		int idNoDestino=0;
-		double weight = 0;
+	string idEdge,idS,idD;
 
-		linestream >> idAresta;
-		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
-		linestream >> idNoOrigem;
-		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
-		linestream >> idNoDestino;
-		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
-		linestream >> weight;
-		for (int i = 0; i < vertices.size(); i++)
-			if (vertices[i].idNo == idNoOrigem)
-				for (int j = 0; j < vertices.size(); j++)
-					if (j != i && vertices[j].idNo == idNoDestino)
-						g->addEdge(vertices[i], vertices[j], weight);
+
+	getline(inFile, idEdge, ';');
+	getline(inFile, idS, ';');
+	getline(inFile, idD, ' ');
+
+	vector<VertexInfo> vertices = g.dfs();
+
+	//each line in the format: idEdge;idSource;idDest
+	while(inFile)
+	{
+		int idE = stoi(idEdge);
+		int idSour = stoi(idS);
+		int idDest = stoi(idD);
+		VertexInfo v1, v2;
+		bool found1,found2;
+
+		for (unsigned int i = 0; i < vertices.size(); i++){
+			if (vertices[i].idNo == idSour)
+			{
+				v1.X = vertices[i].X;
+				v1.Y = vertices[i].Y;
+				v1.idNo = vertices[i].idNo;
+				found1 = true;
+			}
+			else if (vertices[i].idNo == idDest)
+			{
+				v2.X = vertices[i].X;
+				v2.Y = vertices[i].Y;
+				v2.idNo = vertices[i].idNo;
+				found2 = true;
+			}
+			if (found1 && found2)
+				g.addEdge(v1,v2, sqrt( ((v1.X - v2.X)^2) + ((v1.Y - v2.Y)^2)));
+		}
+
+		getline(inFile, idEdge, ';');
+		getline(inFile, idS, ';');
+		getline(inFile, idD, ' ');
+
 	}
 
 	inFile.close();
-
 }
+
 
 void printGraph()
 {
@@ -114,28 +131,29 @@ void printGraph()
 		exit(1);   // call system to stop
 	}
 
-	string line;
+	string line, label, idNo, X, Y;
+	int idN, x,y;
 
-	int idNo=0;
-	int X=0;
-	int Y=0;
-	string label;
 
-	while(getline(inFile, line))
+	getline(inFile, idNo, ';');
+	getline(inFile, X, ';');
+	getline(inFile, Y, ';');
+	getline(inFile, label, ';');
+
+	while(inFile)
 	{
-		stringstream linestream(line);
-		string data;
+		VertexInfo v;
+		idN = stoi(idNo);
+		x = stoi(X);
+		y = stoi(Y);
 
-		linestream >> idNo;
+		gv->addNode(idN,x,y);
+		gv->setVertexLabel(idN, label);
 
-		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
-		linestream >> X;
-		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
-		linestream >> Y;
-		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
-		linestream >> label;
-		gv->addNode(idNo,X,Y);
-		gv->setVertexLabel(idNo, label);
+		getline(inFile, idNo, ';');
+		getline(inFile, X, ';');
+		getline(inFile, Y, ';');
+		getline(inFile, label, ';');
 
 	}
 
@@ -175,7 +193,7 @@ void printGraph()
 }
 
 int main() {
-
+	initialise();
 	printGraph();
 	getchar();
 	return 0;
