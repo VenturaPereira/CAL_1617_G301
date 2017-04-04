@@ -14,7 +14,7 @@
 #include <winsock2.h>
 #endif
 
-#include <string>
+#include <string.h>
 #include <iostream>
 
 using namespace std;

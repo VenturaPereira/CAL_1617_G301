@@ -3,11 +3,14 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string.h>
+
+
 
 void exercicio1();
 void exercicio2();
 void exercicio3();
-void exercicio4();
+
 
 void exercicio1()
 {
@@ -159,14 +162,14 @@ void exercicio3()
 	GraphViewer *gv = new GraphViewer(600, 600, false);
 
 	gv->createWindow(600, 600);
-
+	//gv->defineCurved(false);
 	gv->defineEdgeColor("blue");
 	gv->defineVertexColor("yellow");
 
 	ifstream inFile;
 
 	//Ler o ficheiro nos.txt
-	inFile.open("nos.txt");
+	inFile.open("NÓS.txt");
 
 	if (!inFile) {
 	    cerr << "Unable to open file datafile.txt";
@@ -198,7 +201,7 @@ void exercicio3()
 
 
 	//Ler o ficheiro arestas.txt
-	inFile.open("arestas.txt");
+	inFile.open("ARESTASS.txt");
 
 		if (!inFile) {
 		    cerr << "Unable to open file datafile.txt";
@@ -232,7 +235,7 @@ void exercicio3()
 
 int main() {
 	//exercicio1();
-	exercicio1();
+	exercicio3();
 	//exercicio3();
 	getchar();
 	return 0;

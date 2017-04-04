@@ -1,0 +1,13 @@
+eclipse.preferences.version=1
+environment/buildEnvironmentInclude/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/CPATH/delimiter=;
+environment/buildEnvironmentInclude/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/CPATH/operation=remove
+environment/buildEnvironmentInclude/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/CPLUS_INCLUDE_PATH/delimiter=;
+environment/buildEnvironmentInclude/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/CPLUS_INCLUDE_PATH/operation=remove
+environment/buildEnvironmentInclude/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/C_INCLUDE_PATH/delimiter=;
+environment/buildEnvironmentInclude/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/C_INCLUDE_PATH/operation=remove
+environment/buildEnvironmentInclude/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/append=true
+environment/buildEnvironmentInclude/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/appendContributed=true
+environment/buildEnvironmentLibrary/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/LIBRARY_PATH/delimiter=;
+environment/buildEnvironmentLibrary/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/LIBRARY_PATH/operation=remove
+environment/buildEnvironmentLibrary/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/append=true
+environment/buildEnvironmentLibrary/preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.482017889/appendContributed=true
