@@ -11,6 +11,7 @@ using namespace std;
 template<class T>
 void showPath(int gas,int location,int destination, Graph<T> &g){
 	//primeiro até estacionamento
+
 	///g.dijkstraShortestPath();
 
 	//depois até ao destino
