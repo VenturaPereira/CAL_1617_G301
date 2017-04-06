@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include "Graph.h"
+#include "Menu.h"
 
 
 using namespace std;
@@ -199,19 +200,13 @@ void showOptions(Graph<VertexInfo> &g){
 		if(g.getVertexSet()[i]->getInfo().label != "garage" && g.getVertexSet()[i]->getInfo().label != "crossroad" && g.getVertexSet()[i]->getInfo().label != "parking lot")
 			cout << a++ << " " <<  g.getVertexSet()[i]->getInfo().label << " x: "<< g.getVertexSet()[i]->getInfo().X << " y: "<<  g.getVertexSet()[i]->getInfo().Y<< "\n";
 }
+
 int main() {
 	Graph<VertexInfo> g;
-	int location, destination, gas;
 	initialise(g);
 	printGraph();
-	cout << "Good day \n" << "Where are you?\n";
-	showOptions(g);
-	cin >> location;
-	cout << "Where are you headed? \n";
-	showOptions(g);
-	cin >> destination;
-	cout << "Do you wish to refill?\n1-Yes \n2-No \n";
-	cin >> gas;
+	menu(g);
+	//brute force do caminho mais rápido e depois comparar tempos
 	getchar();
 	return 0;
 }
