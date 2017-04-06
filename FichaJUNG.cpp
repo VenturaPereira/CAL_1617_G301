@@ -1,20 +1,13 @@
+
 #include <cstdio>
 #include "graphviewer.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <string.h>
-
-
-
 #include "Graph.h"
-using namespace std;
 
-/*
-void exercicio1();
-void exercicio2();
-void exercicio3();
-*/
+
+using namespace std;
 
 struct VertexInfo{
 
@@ -25,11 +18,11 @@ struct VertexInfo{
 
 void printGraph();
 
-void initialise();
+void initialise(Graph<VertexInfo> &g);
 
-void initialise(){
+void initialise(Graph<VertexInfo> &g){
 
-	Graph<VertexInfo> g;
+	//Graph<VertexInfo> g;
 
 	ifstream inFile;
 
@@ -89,7 +82,7 @@ void initialise(){
 	{
 		int idE = atoi(idEdge.c_str());
 		int idSour = atoi(idS.c_str());
-		int idDest = atoi(idD.c_str());
+		int idDest = atoi(idD.c);
 		VertexInfo v1, v2;
 		bool found1,found2;
 
@@ -127,7 +120,7 @@ void printGraph()
 	GraphViewer *gv = new GraphViewer(600, 600, false);
 
 	gv->createWindow(600, 600);
-	//gv->defineCurved(false);
+
 	gv->defineEdgeColor("blue");
 	gv->defineVertexColor("yellow");
 
@@ -153,9 +146,9 @@ void printGraph()
 	while(inFile)
 	{
 		VertexInfo v;
-		idN = atoi(idNo.c_str());
-		x = atoi(X.c_str());
-		y = atoi(Y.c_str());
+		idN = stoi(idNo);
+		x = stoi(X);
+		y = stoi(Y);
 
 		gv->addNode(idN,x,y);
 		gv->setVertexLabel(idN, label);
@@ -201,15 +194,28 @@ void printGraph()
 
 	gv->rearrange();
 }
-
+void showOptions(Graph<VertexInfo> &g){
+	int a= 0;
+	for(unsigned int i =0; i < g.getVertexSet().size(); i++){
+	    	if(g.getVertexSet()[i]->getInfo().label != "garage" && g.getVertexSet()[i]->getInfo().label != "crossroad" && g.getVertexSet()[i]->getInfo().label != "parking lot"){
+	          cout << a++ << " " <<  g.getVertexSet()[i]->getInfo().label << " x: "<< g.getVertexSet()[i]->getInfo().X << " y: "<<  g.getVertexSet()[i]->getInfo().Y<< "\n";
+	    	}
+	    }
+}
 int main() {
-
-	//exercicio1();
-	//exercicio3();
-	//exercicio3();
-
-	initialise();
+	Graph<VertexInfo> g;
+	int location, destination, gas;
+	initialise(g);
 	printGraph();
+	cout << "Good day \n" << "Where are you?";
+    showOptions(g);
+	cin >> location;
+	cout << "Where are you headed? \n";
+    showOptions(g);
+	cin >> destination;
+	cout << "Do you wish to refill?\n1-Yes \n2-No \n";
+	cin >> gas;
 	getchar();
 	return 0;
 }
+>>>>>>> branch 'master' of https://github.com/luigicorreia/CAL_1617_G301
