@@ -381,7 +381,7 @@ int Graph<T>::maxNewChildren(Vertex<T> *v, T &inf) const {
 template <class T>
 Vertex<T>* Graph<T>::getVertex(const T &v) const {
 	for(unsigned int i = 0; i < vertexSet.size(); i++)
-		if (vertexSet[i]->info == v) return vertexSet[i];
+		if (vertexSet[i]->info.idNo == v.idNo) return vertexSet[i];
 	return NULL;
 }
 
