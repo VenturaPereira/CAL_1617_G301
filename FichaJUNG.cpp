@@ -1,4 +1,3 @@
-
 #include <cstdio>
 #include "graphviewer.h"
 #include <fstream>
@@ -83,7 +82,7 @@ void initialise(Graph<VertexInfo> &g){
 	{
 		int idE = atoi(idEdge.c_str());
 		int idSour = atoi(idS.c_str());
-		int idDest = atoi(idD.c);
+		int idDest = atoi(idD.c_str());
 		VertexInfo v1, v2;
 		bool found1,found2;
 
@@ -103,7 +102,7 @@ void initialise(Graph<VertexInfo> &g){
 				found2 = true;
 			}
 			if (found1 && found2)
-				g.addEdge(v1,v2, sqrt( ((v1.X - v2.X)^2) + ((v1.Y - v2.Y)^2)));
+				g.addEdge(g.addEdge(g.getVertexSet()[idSour]->getInfo(),g.getVertexSet()[idDest]->getInfo(), sqrt( ((g.getVertexSet()[idSour]->getInfo().getX() - g.getVertexSet()[idDest]->getInfo().getX())^2) + ((g.getVertexSet()[idSour]->getInfo().getY() - g.getVertexSet()[idDest]->getInfo().getY())^2))));
 		}
 
 		getline(inFile, idEdge, ';');
@@ -147,9 +146,9 @@ void printGraph()
 	while(inFile)
 	{
 		VertexInfo v;
-		idN = stoi(idNo);
-		x = stoi(X);
-		y = stoi(Y);
+		idN = atoi(idNo.c_str());
+		x = atoi(X.c_str());
+		y = atoi(Y.c_str());
 
 		gv->addNode(idN,x,y);
 		gv->setVertexLabel(idN, label);
@@ -203,12 +202,30 @@ void showOptions(Graph<VertexInfo> &g){
 }
 
 int main() {
+
+	VertexInfo info;
+	info.X = 260;
+	info.Y = 900;
+	info.idNo = 1;
+	info.label = "garage";
 	Graph<VertexInfo> g;
 	initialise(g);
-	printGraph();
-	menu(g);
+	g.dijkstraShortestPath(info);
+	vector<Vertex<VertexInfo>*> vs = g.getVertexSet();
+
+
+	for(unsigned int i = 0; i < vs.size(); i++) {
+		cout << vs.at(i)->getInfo().idNo << "<-";
+		if(vs.at(i)->path != NULL) {
+			cout << vs.at(i)->path->getInfo().idNo;
+		}
+		cout << "|";
+
+	}
+
+	//printGraph();
+	//menu(g);
 	//brute force do caminho mais rápido e depois comparar tempos
 	getchar();
 	return 0;
 }
->>>>>>> branch 'master' of https://github.com/luigicorreia/CAL_1617_G301
