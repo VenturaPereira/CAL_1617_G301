@@ -199,10 +199,21 @@ int main() {
 
 	Graph<VertexInfo> g;
 
-	vector<VertexInfo> parks;
+	vector<Vertex<VertexInfo>*> parks;
 	initialise(g, parks);
 
-	g.dijkstraShortestPath(parks.at(0));
+	g.dijkstraShortestPath(parks.at(0)->getInfo());
+
+	for(unsigned int i = 0; i < parks.size(); i++){
+		cout << parks.at(i).getId() << "<-";
+		if ( parks[i]->path != NULL )
+		{
+			cout << parks[i]->path();
+		}
+		cout << "|";
+	}
+
+
 	//printGraph();
 	//menu(g, parks);
 
