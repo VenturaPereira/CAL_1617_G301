@@ -11,11 +11,13 @@ using namespace std;
 
 void printGraph();
 
-void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks);
+template <class T>
+void initialise(Graph<T> &g, vector<T> &parks);
 
 class VertexInfo;
 
-void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks){
+template <class T>
+void initialise(Graph<T> &g, vector<T> &parks){
 
 	ifstream inFile;
 
@@ -70,9 +72,8 @@ void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks){
 
 	getline(inFile, idEdge, ';');
 	getline(inFile, idS, ';');
-	getline(inFile, idD, ' ');
+	getline(inFile, idD, ';');
 
-	vector<VertexInfo> vertices = g.dfs();
 
 	//each line in the format: idEdge;idSource;idDest
 	while(inFile)
@@ -80,35 +81,21 @@ void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks){
 		int idE = stoi(idEdge);
 		int idSour = stoi(idS);
 		int idDest = stoi(idD);
-		VertexInfo v1, v2;
-		bool found1,found2;
 
-		for (unsigned int i = 0; i < vertices.size(); i++){
-			if (vertices[i].getId() == idSour)
-			{
-				v1.setId(vertices[i].getId());
-				v1.setX(vertices[i].getX());
-				v1.setY(vertices[i].getY());
-				found1 = true;
-			}
-			else if (vertices[i].getId() == idDest)
-			{
-				v2.setId(vertices[i].getId());
-				v2.setX(vertices[i].getX());
-				v2.setY(vertices[i].getY());
-				found2 = true;
-			}
-			if (found1 && found2)
-				g.addEdge(v1,v2, sqrt( ((v1.getX() - v2.getX())^2) + ((v1.getY() - v2.getY())^2)));
-		}
+		double weight = sqrt( ((g.getVertexSet()[idSour]->getInfo().getX() - g.getVertexSet()[idDest]->getInfo().getX())^2) + ((g.getVertexSet()[idSour]->getInfo().getY() - g.getVertexSet()[idDest]->getInfo().getY())^2));
+
+		g.addEdge(g.getVertexSet()[idSour]->getInfo(),g.getVertexSet()[idDest]->getInfo(), weight);
+		g.addEdge(g.getVertexSet()[idDest]->getInfo(),g.getVertexSet()[idSour]->getInfo(), weight);
 
 		getline(inFile, idEdge, ';');
 		getline(inFile, idS, ';');
-		getline(inFile, idD, ' ');
+		getline(inFile, idD, ';');
 
 	}
 
 	inFile.close();
+
+
 }
 
 

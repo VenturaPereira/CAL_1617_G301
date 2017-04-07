@@ -12,17 +12,18 @@ using namespace std;
 
 template<class T>
 void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &parks){
-	//primeiro até estacionamento
 
 	int distance = 0;
 	int bestDist, bestInd;
 	vector<T> path;
 
-	g.dijkstraShortestPath(g.getVertexSet().at(parks[0].getId())->getInfo());
+
+	//g.dijkstraShortestPath(g.getVertexSet().at(parks[0].getId())->getInfo());
 	g.dijkstraShortestPath(g.getVertexSet().at(destination)->getInfo());
+
 	path = g.getPath(parks[0],g.getVertexSet().at(destination)->getInfo());
 
-	cout << path[0].getLabel() << endl;
+	cout << "path:" << path.size();
 
 	/*for (int z = 1; z < path.size(); z++)
 		distance += g.edgeCost(path[z--].getId(),path[z].getId());
