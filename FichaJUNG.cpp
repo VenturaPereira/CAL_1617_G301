@@ -12,11 +12,13 @@ using namespace std;
 
 void printGraph();
 
-void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks);
+template <class T>
+void initialise(Graph<T> &g, vector<T> &parks);
 
 class VertexInfo;
 
-void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks){
+template <class T>
+void initialise(Graph<T> &g, vector<T> &parks){
 
 	ifstream inFile;
 
@@ -73,19 +75,21 @@ void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks){
 
 	getline(inFile, idEdge, ';');
 	getline(inFile, idS, ';');
-	getline(inFile, idD, ' ');
+	getline(inFile, idD, ';');
 
-	vector<VertexInfo> vertices = g.dfs();
 
 	//each line in the format: idEdge;idSource;idDest
 	while(inFile)
 	{
+
 		int idE = atoi(idEdge.c_str());
 		int idSour = atoi(idS.c_str());
 		int idDest = atoi(idD.c_str());
 		VertexInfo v1, v2;
 		bool found1,found2;
 
+/*
+<<<<<<< HEAD
 		for (unsigned int i = 0; i < vertices.size(); i++){
 			if (vertices[i].getId() == idSour)
 			{
@@ -104,14 +108,23 @@ void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks){
 			if (found1 && found2)
 				g.addEdge(v1, v2, sqrt((v2.getX()^2 - v1.getX()^2) + (v2.getY()^2 - v1.getY()^2)));
 		}
+=======
+*/
+		double weight = sqrt( ((g.getVertexSet()[idSour]->getInfo().getX() - g.getVertexSet()[idDest]->getInfo().getX())^2) + ((g.getVertexSet()[idSour]->getInfo().getY() - g.getVertexSet()[idDest]->getInfo().getY())^2));
+
+		g.addEdge(g.getVertexSet()[idSour]->getInfo(),g.getVertexSet()[idDest]->getInfo(), weight);
+		g.addEdge(g.getVertexSet()[idDest]->getInfo(),g.getVertexSet()[idSour]->getInfo(), weight);
+
 
 		getline(inFile, idEdge, ';');
 		getline(inFile, idS, ';');
-		getline(inFile, idD, ' ');
+		getline(inFile, idD, ';');
 
 	}
 
 	inFile.close();
+
+
 }
 
 
@@ -198,20 +211,13 @@ int main() {
 
 
 	Graph<VertexInfo> g;
-
-	vector<Vertex<VertexInfo>*> parks;
+	vector<VertexInfo> parks;
 	initialise(g, parks);
-
-	g.dijkstraShortestPath(parks.at(0)->getInfo());
-
-	for(unsigned int i = 0; i < parks.size(); i++){
-		cout << parks.at(i).getId() << "<-";
-		if ( parks[i]->path != NULL )
-		{
-			cout << parks[i]->path();
-		}
-		cout << "|";
-	}
+	printGraph();
+	menu(g, parks);
+	//brute force do caminho mais rápido e depois comparar tempos
+	getchar();
+	return 0;
 
 
 	//printGraph();

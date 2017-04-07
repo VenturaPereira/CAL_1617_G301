@@ -12,39 +12,54 @@ using namespace std;
 
 template<class T>
 void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &parks){
-	//primeiro até estacionamento
 
 	int distance = 0;
 	int bestDist, bestInd;
 	vector<T> path;
 
-	g.dijkstraShortestPath(g.getVertexSet().at(parks[0].getId())->getInfo());
-	g.dijkstraShortestPath(g.getVertexSet().at(destination)->getInfo());
+
+
+
+
+	//g.dijkstraShortestPath(g.getVertexSet().at(parks[0].getId())->getInfo());
+	/*for(unsigned int i = 0; i < g.getVertexSet().size(); i++){
+		cout << g.getVertexSet().at(i)->getInfo().getId()	<< "<-";
+		if(g.getVertexSet().at(i)->path != NULL)
+		{
+			cout << g.getVertexSet().at(i)->path->getInfo().getId();
+		}
+			cout << "|";
+	}
+*/
 	path = g.getPath(parks[0],g.getVertexSet().at(destination)->getInfo());
 
-	cout << path[0].getLabel() << endl;
+	//cout << "path:" << path.getId();
 
-	/*for (int z = 1; z < path.size(); z++)
-		distance += g.edgeCost(path[z--].getId(),path[z].getId());
-
-	bestDist = distance;
-	bestInd = parks[0].getId();
-	for (int p = 1; p < parks.size(); p++){
-		path = g.getPath(g.getVertexSet().at(destination)->getInfo(),parks[p]); //path between destination and first park
-		for (int i = 1; i <= path.size(); i++){
-			distance += g.edgeCost(path[i--].getId(),path[i].getId());
-			if (distance < bestDist){
-				bestDist = distance;
-				bestInd = parks[i].getId();
+	for (unsigned int z = 1; z < path.size(); z++) {
+		g.dijkstraShortestPath(g.getVertexSet().at(destination)->getInfo());
+		bestDist = distance;
+		bestInd = parks[0].getId();
+		for (unsigned int p = 1; p < parks.size(); p++){
+			path = g.getPath(g.getVertexSet().at(destination)->getInfo(),parks[p]); //path between destination and first park
+			for (unsigned int i = 1; i <= path.size(); i++){
+				distance += g.edgeCost(path[i--].getId(),path[i].getId());
+				if (distance < bestDist){
+					bestDist = distance;
+					bestInd = parks[i].getId();
+				}
 			}
 		}
 	}
 
-	cout << bestInd;*/
+
+	cout << "The nearest park is " << bestInd;
 
 	//g.dijkstraShortestPath((g.getVertexSet().at(i)->getInfo())); //for the locations
 
 	//verificiar parque mais proximo do destino
+
+
+
 	//verificar do inicio para o parque mais proximo
 
 	//distance for one park

@@ -262,6 +262,7 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	vD->indegree++;
 	vS->addEdge(vD,w);
 
+
 	return true;
 }
 
@@ -551,7 +552,6 @@ vector<T> Graph<T>::getfloydWarshallPath(const T &origin, const T &dest){
 }
 
 
-
 template<class T>
 void Graph<T>::getfloydWarshallPathAux(int index1, int index2, vector<T> & res)
 {
@@ -645,6 +645,7 @@ void Graph<T>::dijkstraShortestPath(const T &s) {
 		v = pq.front();
 		pop_heap(pq.begin(), pq.end());
 		pq.pop_back();
+		//cout << v->adj.size() << endl;
 		for(unsigned int i = 0; i < v->adj.size(); i++) {
 
 			Vertex<T>* w = v->adj[i].dest;
