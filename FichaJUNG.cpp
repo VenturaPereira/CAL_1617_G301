@@ -5,24 +5,17 @@
 #include <sstream>
 #include "Graph.h"
 #include "Menu.h"
-
+#include "Utilities.h"
 
 using namespace std;
 
-struct VertexInfo{
-
-	int idNo, X,Y;
-	string label;
-};
-
-
 void printGraph();
 
-void initialise(Graph<VertexInfo> &g);
+void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks);
 
-void initialise(Graph<VertexInfo> &g){
+class VertexInfo;
 
-	//Graph<VertexInfo> g;
+void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks){
 
 	ifstream inFile;
 
@@ -45,10 +38,14 @@ void initialise(Graph<VertexInfo> &g){
 	while(inFile)
 	{
 		VertexInfo v;
-		v.idNo = stoi(id);
-		v.X = stoi(x);
-		v.Y = stoi(y);
-		v.label = label;
+		v.setId(stoi(id));
+		v.setX(stoi(x));
+		v.setY(stoi(y));
+		v.setLabel(label);
+
+		if (label == "garage" || label == "parking lot")
+			parks.push_back(v);
+
 
 		g.addVertex(v);
 
@@ -87,22 +84,22 @@ void initialise(Graph<VertexInfo> &g){
 		bool found1,found2;
 
 		for (unsigned int i = 0; i < vertices.size(); i++){
-			if (vertices[i].idNo == idSour)
+			if (vertices[i].getId() == idSour)
 			{
-				v1.X = vertices[i].X;
-				v1.Y = vertices[i].Y;
-				v1.idNo = vertices[i].idNo;
+				v1.setId(vertices[i].getId());
+				v1.setX(vertices[i].getX());
+				v1.setY(vertices[i].getY());
 				found1 = true;
 			}
-			else if (vertices[i].idNo == idDest)
+			else if (vertices[i].getId() == idDest)
 			{
-				v2.X = vertices[i].X;
-				v2.Y = vertices[i].Y;
-				v2.idNo = vertices[i].idNo;
+				v2.setId(vertices[i].getId());
+				v2.setX(vertices[i].getX());
+				v2.setY(vertices[i].getY());
 				found2 = true;
 			}
 			if (found1 && found2)
-				g.addEdge(v1,v2, sqrt( ((v1.X - v2.X)^2) + ((v1.Y - v2.Y)^2)));
+				g.addEdge(v1,v2, sqrt( ((v1.getX() - v2.getX())^2) + ((v1.getY() - v2.getY())^2)));
 		}
 
 		getline(inFile, idEdge, ';');
@@ -125,7 +122,6 @@ void printGraph()
 	gv->defineVertexColor("yellow");
 
 	ifstream inFile;
-
 	//Ler o ficheiro nos.txt
 	inFile.open("nos.txt");
 
@@ -194,18 +190,13 @@ void printGraph()
 
 	gv->rearrange();
 }
-void showOptions(Graph<VertexInfo> &g){
-	int a= 0;
-	for(unsigned int i =0; i < g.getVertexSet().size(); i++)
-		if(g.getVertexSet()[i]->getInfo().label != "garage" && g.getVertexSet()[i]->getInfo().label != "crossroad" && g.getVertexSet()[i]->getInfo().label != "parking lot")
-			cout << a++ << " " <<  g.getVertexSet()[i]->getInfo().label << " x: "<< g.getVertexSet()[i]->getInfo().X << " y: "<<  g.getVertexSet()[i]->getInfo().Y<< "\n";
-}
 
 int main() {
 	Graph<VertexInfo> g;
-	initialise(g);
+	vector<VertexInfo> parks;
+	initialise(g, parks);
 	printGraph();
-	menu(g);
+	menu(g, parks);
 	//brute force do caminho mais rápido e depois comparar tempos
 	getchar();
 	return 0;

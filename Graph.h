@@ -9,11 +9,9 @@
 #include <list>
 #include <limits>
 #include <cmath>
+#include "Utilities.h"
 
 using namespace std;
-
-
-
 
 template <class T> class Edge;
 template <class T> class Graph;
@@ -32,8 +30,8 @@ template <class T>
 class Vertex {
 	T info;
 	vector<Edge<T>  > adj;
-	bool visited;
 	bool processing;
+	bool visited;
 	int indegree;
 	double dist;
 public:
@@ -214,7 +212,7 @@ bool Graph<T>::addVertex(const T &in) {
 	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
 	typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
 	for (; it!=ite; it++)
-		if ((*it)->info.idNo == in.idNo) return false;
+		if ((*it)->info.getId() == in.getId()) return false;
 
 	Vertex<T> *v1 = new Vertex<T>(in);
 	vertexSet.push_back(v1);
@@ -254,9 +252,9 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	int found=0;
 	Vertex<T> *vS, *vD;
 	while (found!=2 && it!=ite ) {
-		if ( (*it)->info.idNo == sourc.idNo)
+		if ( (*it)->info.getId() == sourc.getId())
 			{ vS=*it; found++;}
-		if ( (*it)->info.idNo == dest.idNo)
+		if ( (*it)->info.getId() == dest.getId())
 			{ vD=*it; found++;}
 		it ++;
 	}
@@ -381,7 +379,7 @@ int Graph<T>::maxNewChildren(Vertex<T> *v, T &inf) const {
 template <class T>
 Vertex<T>* Graph<T>::getVertex(const T &v) const {
 	for(unsigned int i = 0; i < vertexSet.size(); i++)
-		if (vertexSet[i]->info.idNo == v.idNo) return vertexSet[i];
+		if (vertexSet[i]->info.getId() == v.getId()) return vertexSet[i];
 	return NULL;
 }
 
@@ -493,7 +491,7 @@ vector<T> Graph<T>::getPath(const T &origin, const T &dest){
 	Vertex<T>* v = getVertex(dest);
 
 	buffer.push_front(v->info);
-	while ( v->path != NULL &&  v->path->info != origin) {
+	while ( v->path != NULL &&  v->path->info.getId() != origin.getId()) {
 		v = v->path;
 		buffer.push_front(v->info);
 	}
@@ -516,9 +514,9 @@ vector<T> Graph<T>::getfloydWarshallPath(const T &origin, const T &dest){
 
 	for(unsigned int i = 0; i < vertexSet.size(); i++)
 	{
-		if(vertexSet[i]->info == origin)
+		if(vertexSet[i]->info.getId() == origin.getId())
 			originIndex = i;
-		if(vertexSet[i]->info == dest)
+		if(vertexSet[i]->info.getId() == dest.getId())
 			destinationIndex = i;
 
 		if(originIndex != -1 && destinationIndex != -1)
@@ -642,14 +640,13 @@ void Graph<T>::dijkstraShortestPath(const T &s) {
 
 	make_heap(pq.begin(), pq.end());
 
-
 	while( !pq.empty() ) {
 
 		v = pq.front();
 		pop_heap(pq.begin(), pq.end());
 		pq.pop_back();
-
 		for(unsigned int i = 0; i < v->adj.size(); i++) {
+
 			Vertex<T>* w = v->adj[i].dest;
 
 			if(v->dist + v->adj[i].weight < w->dist ) {
