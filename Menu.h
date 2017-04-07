@@ -6,37 +6,77 @@
  */
 
 #include <iostream>
+#include "Graph.h"
+#include "Utilities.h"
 using namespace std;
 
 template<class T>
-void showPath(int gas,int location,int destination, Graph<T> &g){
+void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &parks){
 	//primeiro até estacionamento
 
-	///g.dijkstraShortestPath();
+	int distance = 0;
+	int bestDist, bestInd;
+	vector<T> path;
 
-	//depois até ao destino
+	g.dijkstraShortestPath(g.getVertexSet().at(parks[0].getId())->getInfo());
+	g.dijkstraShortestPath(g.getVertexSet().at(destination)->getInfo());
+	path = g.getPath(parks[0],g.getVertexSet().at(destination)->getInfo());
+
+	cout << path[0].getLabel() << endl;
+
+	/*for (int z = 1; z < path.size(); z++)
+		distance += g.edgeCost(path[z--].getId(),path[z].getId());
+
+	bestDist = distance;
+	bestInd = parks[0].getId();
+	for (int p = 1; p < parks.size(); p++){
+		path = g.getPath(g.getVertexSet().at(destination)->getInfo(),parks[p]); //path between destination and first park
+		for (int i = 1; i <= path.size(); i++){
+			distance += g.edgeCost(path[i--].getId(),path[i].getId());
+			if (distance < bestDist){
+				bestDist = distance;
+				bestInd = parks[i].getId();
+			}
+		}
+	}
+
+	cout << bestInd;*/
+
+	//g.dijkstraShortestPath((g.getVertexSet().at(i)->getInfo())); //for the locations
+
+	//verificiar parque mais proximo do destino
+	//verificar do inicio para o parque mais proximo
+
+	//distance for one park
+
+
 
 }
 
 template<class T>
 void showOptions(Graph<T> &g){
 	for(unsigned int i =0; i < g.getVertexSet().size(); i++)
-		if(g.getVertexSet()[i]->getInfo().label != "garage" && g.getVertexSet()[i]->getInfo().label != "crossroad" && g.getVertexSet()[i]->getInfo().label != "parking lot")
-			cout << i << " " <<  g.getVertexSet()[i]->getInfo().label << " x: "<< g.getVertexSet()[i]->getInfo().X << " y: "<<  g.getVertexSet()[i]->getInfo().Y<< "\n";
+		if(g.getVertexSet()[i]->getInfo().getLabel() != "garage" && g.getVertexSet()[i]->getInfo().getLabel() != "crossroad" && g.getVertexSet()[i]->getInfo().getLabel() != "parking lot")
+			cout << g.getVertexSet()[i]->getInfo().getId() << " " <<  g.getVertexSet()[i]->getInfo().getLabel() << " x: "<< g.getVertexSet()[i]->getInfo().getX() << " y: "<<  g.getVertexSet()[i]->getInfo().getY()<< "\n";
 }
 
 template<class T>
-void menu(Graph<T> &g){
+void menu(Graph<T> &g, vector<T> parks){
 	int location, destination, gas;
-	cout << "Good day \n" << "Where are you?\n";
-	showOptions(g);
-	cin >> location;
-	cout << "Where are you headed? \n";
-	showOptions(g);
-	cin >> destination;
-	cout << "Do you wish to refill?\n1-Yes \n2-No \n";
-	cin >> gas;
-	showPath(gas, location, destination, g);
+	bool valid = false;
+	while(!valid){
+		cout << "Good day \n" << "Where are you?(choose the node id)\n";
+		showOptions(g);
+		cin >> location;
+		cout << "Where are you headed?(choose the node id)\n";
+		showOptions(g);
+		cin >> destination;
+		if (location != destination)
+			valid = true;
+		cout << "Do you wish to refill?\n1-Yes \n2-No \n";
+		cin >> gas;
+		showPath(gas, location, destination, g, parks);
+	}
 }
 
 

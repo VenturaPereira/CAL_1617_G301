@@ -1,28 +1,22 @@
 #include <cstdio>
+#include <string>
 #include "graphviewer.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include "Graph.h"
 #include "Menu.h"
-
+#include "Utilities.h"
 
 using namespace std;
 
-struct VertexInfo{
-
-	int idNo, X,Y;
-	string label;
-};
-
-
 void printGraph();
 
-void initialise(Graph<VertexInfo> &g);
+void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks);
 
-void initialise(Graph<VertexInfo> &g){
+class VertexInfo;
 
-	//Graph<VertexInfo> g;
+void initialise(Graph<VertexInfo> &g, vector<VertexInfo> &parks){
 
 	ifstream inFile;
 
@@ -45,10 +39,16 @@ void initialise(Graph<VertexInfo> &g){
 	while(inFile)
 	{
 		VertexInfo v;
-		v.idNo = atoi(id.c_str());
-		v.X = atoi(x.c_str());
-		v.Y = atoi(y.c_str());
-		v.label = label;
+
+		v.setId(atoi(id.c_str()));
+		v.setX(atoi(x.c_str()));
+		v.setY(atoi(y.c_str()));
+		v.setLabel(label);
+
+		if (label == "garage" || label == "parking lot")
+			parks.push_back(v);
+
+
 
 		g.addVertex(v);
 
@@ -87,22 +87,22 @@ void initialise(Graph<VertexInfo> &g){
 		bool found1,found2;
 
 		for (unsigned int i = 0; i < vertices.size(); i++){
-			if (vertices[i].idNo == idSour)
+			if (vertices[i].getId() == idSour)
 			{
-				v1.X = vertices[i].X;
-				v1.Y = vertices[i].Y;
-				v1.idNo = vertices[i].idNo;
+				v1.setId(vertices[i].getId());
+				v1.setX(vertices[i].getX());
+				v1.setY(vertices[i].getY());
 				found1 = true;
 			}
-			else if (vertices[i].idNo == idDest)
+			else if (vertices[i].getId() == idDest)
 			{
-				v2.X = vertices[i].X;
-				v2.Y = vertices[i].Y;
-				v2.idNo = vertices[i].idNo;
+				v2.setId(vertices[i].getId());
+				v2.setX(vertices[i].getX());
+				v2.setY(vertices[i].getY());
 				found2 = true;
 			}
 			if (found1 && found2)
-				g.addEdge(g.addEdge(g.getVertexSet()[idSour]->getInfo(),g.getVertexSet()[idDest]->getInfo(), sqrt( ((g.getVertexSet()[idSour]->getInfo().getX() - g.getVertexSet()[idDest]->getInfo().getX())^2) + ((g.getVertexSet()[idSour]->getInfo().getY() - g.getVertexSet()[idDest]->getInfo().getY())^2))));
+				g.addEdge(v1, v2, sqrt((v2.getX()^2 - v1.getX()^2) + (v2.getY()^2 - v1.getY()^2)));
 		}
 
 		getline(inFile, idEdge, ';');
@@ -125,7 +125,6 @@ void printGraph()
 	gv->defineVertexColor("yellow");
 
 	ifstream inFile;
-
 	//Ler o ficheiro nos.txt
 	inFile.open("nos.txt");
 
@@ -194,38 +193,20 @@ void printGraph()
 
 	gv->rearrange();
 }
-void showOptions(Graph<VertexInfo> &g){
-	int a= 0;
-	for(unsigned int i =0; i < g.getVertexSet().size(); i++)
-		if(g.getVertexSet()[i]->getInfo().label != "garage" && g.getVertexSet()[i]->getInfo().label != "crossroad" && g.getVertexSet()[i]->getInfo().label != "parking lot")
-			cout << a++ << " " <<  g.getVertexSet()[i]->getInfo().label << " x: "<< g.getVertexSet()[i]->getInfo().X << " y: "<<  g.getVertexSet()[i]->getInfo().Y<< "\n";
-}
 
 int main() {
 
-	VertexInfo info;
-	info.X = 260;
-	info.Y = 900;
-	info.idNo = 1;
-	info.label = "garage";
+
 	Graph<VertexInfo> g;
-	initialise(g);
-	g.dijkstraShortestPath(info);
-	vector<Vertex<VertexInfo>*> vs = g.getVertexSet();
 
+	vector<VertexInfo> parks;
+	initialise(g, parks);
 
-	for(unsigned int i = 0; i < vs.size(); i++) {
-		cout << vs.at(i)->getInfo().idNo << "<-";
-		if(vs.at(i)->path != NULL) {
-			cout << vs.at(i)->path->getInfo().idNo;
-		}
-		cout << "|";
-
-	}
-
+	g.dijkstraShortestPath(parks.at(0));
 	//printGraph();
-	//menu(g);
-	//brute force do caminho mais rápido e depois comparar tempos
+	//menu(g, parks);
+
+
 	getchar();
 	return 0;
 }
