@@ -14,12 +14,12 @@ using namespace std;
 void printGraph();
 
 template <class T>
-void initialise(Graph<T> &g, vector<T> &parks);
+void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations);
 
 class VertexInfo;
 
 template <class T>
-void initialise(Graph<T> &g, vector<T> &parks){
+void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
 
 	ifstream inFile;
 
@@ -51,6 +51,8 @@ void initialise(Graph<T> &g, vector<T> &parks){
 		if (label == "garage" || label == "parking lot")
 			parks.push_back(v);
 
+		if(label == "gas station")
+			gasStations.push_back(v);
 
 
 		g.addVertex(v);
@@ -190,12 +192,13 @@ void printGraph()
 int main() {
 
 	Graph<VertexInfo> g;
-	vector<VertexInfo> parks;
+	vector<VertexInfo> parks, gasStations;
 
-	initialise(g, parks);
+
+	initialise(g, parks, gasStations);
 	printGraph();
 
-	menu(g, parks);
+	menu(g, parks, gasStations);
 	//brute force do caminho mais r�pido e depois comparar tempos
 	getchar();
 	return 0;
