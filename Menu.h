@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Graph.h"
 #include "Utilities.h"
+#include <algorithm>
 using namespace std;
 
 template<class T>
@@ -66,7 +67,7 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		for(unsigned int k = 1; k < gasStations.size(); k++){
 			distance = 0;
 			g.dijkstraShortestPath(g.getVertexSet().at(gasStations[k].getId())->getInfo());
-			path = g.getPath(g.getVertexSet().at(location)->getInfo(), gasStations[k]);
+			path = g.getPath(gasStations[k], g.getVertexSet().at(location)->getInfo());
 			for(unsigned int j = 0; j < path.size()-1; j++)
 				distance += g.edgeCost(path[j].getId(), path[j+1].getId());
 
@@ -81,16 +82,16 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		//best gas station to best park
 		g.dijkstraShortestPath(bestGasStation);
 		bestParktoGas = g.getPath(bestGasStation, bestPark);
-		for (unsigned int l = 0; l < path.size()-1; l++)
-			gasToPark += g.edgeCost(path[l].getId(),path[l+1].getId());
+		for (unsigned int l = 0; l < bestParktoGas.size()-1; l++)
+			gasToPark += g.edgeCost(bestParktoGas[l].getId(),bestParktoGas[l+1].getId());
 	}
 
 	else{
 		//location to the park
 		g.dijkstraShortestPath(g.getVertexSet().at(location)->getInfo());
 		bestParktoLoc = g.getPath(g.getVertexSet().at(location)->getInfo(), bestPark);
-		for (unsigned int l = 0; l < path.size()-1; l++)
-			distance += g.edgeCost(path[l].getId(),path[l+1].getId());
+		for (unsigned int l = 0; l < bestParktoLoc.size()-1; l++)
+			distance += g.edgeCost(bestParktoLoc[l].getId(),bestParktoLoc[l+1].getId());
 		bestDistLocation = distance;
 	}
 
@@ -98,6 +99,7 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		//between gas station and location
 		cout << "The closest gas station to your location is " << bestDistGasStation << " meters away." << endl;
 		cout << "To get there, you'll have to follow this path: " << endl;
+		reverse(bestPathGasToLoc.begin(), bestPathGasToLoc.end());
 		for (unsigned int l = 0; l < bestPathGasToLoc.size(); l++)
 		{
 			if (l == bestPathGasToLoc.size()-1)
@@ -108,9 +110,9 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 
 		cout << "The closest park to your destination is " << bestPark.getLabel() << " and it is " << gasToPark << " meters away." << endl;
 		cout << "After filling up your tank, you should follow this route: " << endl;
-		for (unsigned int l = 0; l < path.size(); l++)
+		for (unsigned int l = 0; l < bestParktoGas.size(); l++)
 		{
-			if (l == path.size()-1)
+			if (l == bestParktoGas.size()-1)
 				cout << bestParktoGas[l].getLabel() << "." << endl;
 			else
 				cout << bestParktoGas[l].getLabel() << ", ";
@@ -129,9 +131,9 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		//showing distance between location and park
 		cout << "The closest park to your destination is " << bestPark.getLabel() << " and it is " << bestDistLocation << " meters away." << endl;
 		cout << "To get there, you'll have to follow this path: " << endl;
-		for (unsigned int l = 0; l < path.size(); l++)
+		for (unsigned int l = 0; l < bestParktoLoc.size(); l++)
 		{
-			if (l == path.size()-1)
+			if (l == bestParktoLoc.size()-1)
 				cout << bestParktoLoc[l].getLabel() << "." << endl;
 			else
 				cout << bestParktoLoc[l].getLabel() << ", ";
