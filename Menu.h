@@ -13,58 +13,64 @@ using namespace std;
 template<class T>
 void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &parks){
 
-	int distance = 0;
-	int bestDist, bestInd;
+	double distance = 0, bestDistParking, bestDistLocation;
 	vector<T> path;
+	vector<T> bestPathParking;
+	T bestPark;
 
+	//closest park
 
-
-
-
-	//g.dijkstraShortestPath(g.getVertexSet().at(parks[0].getId())->getInfo());
-	/*for(unsigned int i = 0; i < g.getVertexSet().size(); i++){
-		cout << g.getVertexSet().at(i)->getInfo().getId()	<< "<-";
-		if(g.getVertexSet().at(i)->path != NULL)
-		{
-			cout << g.getVertexSet().at(i)->path->getInfo().getId();
-		}
-			cout << "|";
-	}
-*/
+	g.dijkstraShortestPath(g.getVertexSet().at(parks[0].getId())->getInfo());
 	path = g.getPath(parks[0],g.getVertexSet().at(destination)->getInfo());
 
-	//cout << "path:" << path.getId();
+	//for 1st park
+	for (unsigned int z = 0; z < path.size()-1; z++)
+		distance += g.edgeCost(path[z].getId(),path[z+1].getId());
 
-	for (unsigned int z = 1; z < path.size(); z++) {
-		g.dijkstraShortestPath(g.getVertexSet().at(destination)->getInfo());
-		bestDist = distance;
-		bestInd = parks[0].getId();
-		for (unsigned int p = 1; p < parks.size(); p++){
-			path = g.getPath(g.getVertexSet().at(destination)->getInfo(),parks[p]); //path between destination and first park
-			for (unsigned int i = 1; i <= path.size(); i++){
-				distance += g.edgeCost(path[i--].getId(),path[i].getId());
-				if (distance < bestDist){
-					bestDist = distance;
-					bestInd = parks[i].getId();
-				}
-			}
+	bestDistParking = distance;
+	bestPathParking = path;
+	bestPark = parks[0];
+
+	for (unsigned int p = 1; p < parks.size(); p++){
+		distance = 0;
+		g.dijkstraShortestPath(g.getVertexSet().at(parks[p].getId())->getInfo());
+		path = g.getPath(parks[p], g.getVertexSet().at(destination)->getInfo()); //path between destination and park p
+		for (unsigned int z = 0; z < path.size()-1; z++)
+			distance += g.edgeCost(path[z].getId(),path[z+1].getId());
+		if (distance < bestDistParking){
+			bestDistParking = distance;
+			bestPathParking = path;
+			bestPark = parks[p];
 		}
 	}
 
-
-	cout << "The nearest park is " << bestInd;
-
-	//g.dijkstraShortestPath((g.getVertexSet().at(i)->getInfo())); //for the locations
-
-	//verificiar parque mais proximo do destino
-
+	//location to the park
+	g.dijkstraShortestPath(g.getVertexSet().at(location)->getInfo());
+	path = g.getPath(g.getVertexSet().at(location)->getInfo(), bestPark);
+	for (unsigned int l = 0; l < path.size()-1; l++)
+		bestDistLocation += g.edgeCost(path[l].getId(),path[l+1].getId());
 
 
-	//verificar do inicio para o parque mais proximo
+	cout << "The closest park to your destination is " << bestPark.getLabel() << " and it is " << bestDistLocation << " meters away." << endl;
+	cout << "To get there, you'll have to follow this path: " << endl;
+	for (unsigned int l = 0; l < path.size(); l++)
+	{
+		if (l == path.size()-1)
+			cout << path[l].getLabel() << "." << endl;
+		else
+			cout << path[l].getLabel() << ", ";
+	}
+	cout << "Afterwards, you'll have to walk " << bestDistParking << " meters." << endl;
+	cout << "To reach your destination, you'll have to follow this path, by foot: " << endl;
+	for (unsigned int l = 0; l < bestPathParking.size(); l++)
+	{
+		if (l == bestPathParking.size()-1)
+			cout << bestPathParking[l].getLabel() << ". " << endl;
+		else
+			cout << bestPathParking[l].getLabel() << ", ";
+	}
 
-	//distance for one park
-
-
+	getchar();
 
 }
 
@@ -93,5 +99,4 @@ void menu(Graph<T> &g, vector<T> parks){
 		showPath(gas, location, destination, g, parks);
 	}
 }
-
 

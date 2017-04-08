@@ -180,7 +180,7 @@ public:
 	void bellmanFordShortestPath(const T &s);
 	void dijkstraShortestPath(const T &s);
 	void floydWarshallShortestPath();
-	int edgeCost(int vOrigIndex, int vDestIndex);
+	double edgeCost(int vOrigIndex, int vDestIndex);
 	vector<T> getfloydWarshallPath(const T &origin, const T &dest);
 	void getfloydWarshallPathAux(int index1, int index2, vector<T> & res);
 };
@@ -490,7 +490,6 @@ vector<T> Graph<T>::getPath(const T &origin, const T &dest){
 
 	list<T> buffer;
 	Vertex<T>* v = getVertex(dest);
-
 	buffer.push_front(v->info);
 	while ( v->path != NULL &&  v->path->info.getId() != origin.getId()) {
 		v = v->path;
@@ -621,8 +620,6 @@ void Graph<T>::bellmanFordShortestPath(const T &s) {
 
 
 
-
-
 template<class T>
 void Graph<T>::dijkstraShortestPath(const T &s) {
 
@@ -645,9 +642,7 @@ void Graph<T>::dijkstraShortestPath(const T &s) {
 		v = pq.front();
 		pop_heap(pq.begin(), pq.end());
 		pq.pop_back();
-		//cout << v->adj.size() << endl;
 		for(unsigned int i = 0; i < v->adj.size(); i++) {
-
 			Vertex<T>* w = v->adj[i].dest;
 
 			if(v->dist + v->adj[i].weight < w->dist ) {
@@ -669,7 +664,7 @@ void Graph<T>::dijkstraShortestPath(const T &s) {
 }
 
 template<class T>
-int Graph<T>::edgeCost(int vOrigIndex, int vDestIndex)
+double Graph<T>::edgeCost(int vOrigIndex, int vDestIndex)
 {
 	if(vertexSet[vOrigIndex] == vertexSet[vDestIndex])
 		return 0;
