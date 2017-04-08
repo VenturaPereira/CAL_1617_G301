@@ -194,7 +194,6 @@ int main() {
 	Graph<VertexInfo> g;
 	vector<VertexInfo> parks, gasStations;
 
-
 	initialise(g, parks, gasStations);
 	printGraph();
 
