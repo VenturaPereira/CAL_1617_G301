@@ -18,7 +18,6 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 	vector<T> path;
 	vector<T> bestPathGasToLoc;
 	vector<T> bestParktoGas;
-
 	vector<T> bestParkToDest;
 	vector<T> bestParktoLoc;
 	T bestPark;
@@ -81,8 +80,10 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		//best gas station to best park
 		g.dijkstraShortestPath(bestGasStation);
 		bestParktoGas = g.getPath(bestGasStation, bestPark);
+		distance = 0;
 		for (unsigned int l = 0; l < path.size()-1; l++)
-			gasToPark += g.edgeCost(path[l].getId(),path[l+1].getId());
+			distance += g.edgeCost(path[l].getId(),path[l+1].getId());
+		gasToPark = distance;
 	}
 
 	else{
