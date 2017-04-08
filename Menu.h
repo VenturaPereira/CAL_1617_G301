@@ -11,12 +11,7 @@
 using namespace std;
 
 template<class T>
-void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &parks){
-
-	int distance = 0;
-	int bestDist, bestInd;
-	vector<T> path;
-
+void showPath(int gas,int location,int destination, Graph<T> &g, vector<int> &parkerinos){
 
 
 
@@ -31,28 +26,35 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 			cout << "|";
 	}
 */
-	path = g.getPath(parks[0],g.getVertexSet().at(destination)->getInfo());
+	int distance = 0;
+	int bestDist;
+	int bestInd;
+	vector<T> path;
+	path = g.getPath(g.getVertexSet().at(parkerinos.at(0))->getInfo(),g.getVertexSet().at(destination)->getInfo());
+	cout << path->getInfo()->getId();
 
 	//cout << "path:" << path.getId();
-
+	/*
 	for (unsigned int z = 1; z < path.size(); z++) {
+
 		g.dijkstraShortestPath(g.getVertexSet().at(destination)->getInfo());
 		bestDist = distance;
-		bestInd = parks[0].getId();
-		for (unsigned int p = 1; p < parks.size(); p++){
-			path = g.getPath(g.getVertexSet().at(destination)->getInfo(),parks[p]); //path between destination and first park
+		bestInd = parkerinos.at(0);
+		cout << "here";
+		for (unsigned int p = 1; p < parkerinos.size(); p++){
+			path = g.getPath(g.getVertexSet().at(destination)->getInfo(),g.getVertexSet().at(parkerinos.at(p))->getInfo()); //path between destination and first park
 			for (unsigned int i = 1; i <= path.size(); i++){
-				distance += g.edgeCost(path[i--].getId(),path[i].getId());
+				distance = path.at(i).;
 				if (distance < bestDist){
 					bestDist = distance;
-					bestInd = parks[i].getId();
+					bestInd = parkerinos.at(i);
 				}
 			}
 		}
 	}
+*/
 
-
-	cout << "The nearest park is " << bestInd;
+	//cout << "The nearest park is " << bestInd;
 
 	//g.dijkstraShortestPath((g.getVertexSet().at(i)->getInfo())); //for the locations
 
@@ -79,6 +81,7 @@ template<class T>
 void menu(Graph<T> &g, vector<T> parks){
 	int location, destination, gas;
 	bool valid = false;
+	vector<int> parkerinos;
 	while(!valid){
 		cout << "Good day \n" << "Where are you?(choose the node id)\n";
 		showOptions(g);
@@ -90,7 +93,10 @@ void menu(Graph<T> &g, vector<T> parks){
 			valid = true;
 		cout << "Do you wish to refill?\n1-Yes \n2-No \n";
 		cin >> gas;
-		showPath(gas, location, destination, g, parks);
+		for(unsigned int i = 0; i < parks.size(); i++){
+			parkerinos.push_back(parks.at(i).getId());
+		}
+		showPath(gas, location, destination, g, parkerinos);
 	}
 }
 

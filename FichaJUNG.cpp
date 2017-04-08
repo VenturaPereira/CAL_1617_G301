@@ -110,7 +110,7 @@ void initialise(Graph<T> &g, vector<T> &parks){
 		}
 =======
 */
-		double weight = sqrt( ((g.getVertexSet()[idSour]->getInfo().getX() - g.getVertexSet()[idDest]->getInfo().getX())^2) + ((g.getVertexSet()[idSour]->getInfo().getY() - g.getVertexSet()[idDest]->getInfo().getY())^2));
+		double weight = sqrt((abs(g.getVertexSet()[idSour]->getInfo().getX() - g.getVertexSet()[idDest]->getInfo().getX())^2) + (abs(g.getVertexSet()[idSour]->getInfo().getY() - g.getVertexSet()[idDest]->getInfo().getY())^2));
 
 		g.addEdge(g.getVertexSet()[idSour]->getInfo(),g.getVertexSet()[idDest]->getInfo(), weight);
 		g.addEdge(g.getVertexSet()[idDest]->getInfo(),g.getVertexSet()[idSour]->getInfo(), weight);
@@ -212,9 +212,24 @@ int main() {
 
 	Graph<VertexInfo> g;
 	vector<VertexInfo> parks;
+
 	initialise(g, parks);
 	printGraph();
-	menu(g, parks);
+	vector<Vertex<VertexInfo>*> vs = g.getVertexSet();
+
+	stringstream ss;
+	g.dijkstraShortestPath(g.getVertexSet().at(27)->getInfo());
+
+	for(unsigned int i = 0; i < parks.size(); i++)
+	{
+		ss << vs.at(parks.at(i).getId())->getInfo(.) << "<-";
+		if(vs.at(parks.at(i).getId()) != NULL)
+		{
+
+		}
+	}
+
+	//menu(g, parks);
 	//brute force do caminho mais rápido e depois comparar tempos
 	getchar();
 	return 0;
@@ -224,6 +239,5 @@ int main() {
 	//menu(g, parks);
 
 
-	getchar();
-	return 0;
+
 }
