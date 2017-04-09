@@ -13,8 +13,6 @@ using namespace std;
 
 void printGraph();
 
-//void printGraphPath();
-
 template <class T>
 void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations);
 
@@ -186,28 +184,18 @@ void printGraph()
 		gv->addEdge(idAresta,idNoOrigem,idNoDestino, EdgeType::UNDIRECTED);
 
 	}
-
 	inFile.close();
 
 	gv->rearrange();
-	//gv = graphViewer;
-
-
 }
 
 
-
 int main() {
-
 	Graph<VertexInfo> g;
 	vector<VertexInfo> parks, gasStations;
-
-
 	initialise(g, parks, gasStations);
-	printGraph();
-
+//	printGraph();
 	menu(g, parks, gasStations);
-	//brute force do caminho mais r�pido e depois comparar tempos
 	getchar();
 	return 0;
 
