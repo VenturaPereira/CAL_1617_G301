@@ -90,10 +90,6 @@ void printGraphPath(){
 	inFile.close();
 
 	gv->rearrange();
-
-	//gv = graphViewer;
-
-
 }
 
 
@@ -105,9 +101,7 @@ void printPathWithGas(vector<T>LoctoGas,vector<T> GastoPark,vector<T> ParktoDest
 		Sleep(1000);
 		gv->setVertexColor(LoctoGas.at(i).getId(), "blue");
 		gv->rearrange();
-}
-
-
+	}
 
 	for(unsigned int i = 0; i < GastoPark.size(); i++)
 	{
@@ -335,5 +329,7 @@ void menu(Graph<T> &g, vector<T> parks, vector<T> gasStations){
 	cout << "Do you wish to refill?\n1-Yes \n2-No \n";
 	cin >> gas;
 	showPath(gas, location, destination, g, parks, gasStations);
+
+	cout << endl << "Thanks for using our application!\n" << endl;
 
 }
