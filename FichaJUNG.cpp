@@ -13,6 +13,8 @@ using namespace std;
 
 void printGraph();
 
+//void printGraphPath();
+
 template <class T>
 void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations);
 
@@ -112,6 +114,7 @@ void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
 
 void printGraph()
 {
+
 	GraphViewer *gv = new GraphViewer(600, 600, false);
 
 	gv->createWindow(600, 600);
@@ -187,12 +190,18 @@ void printGraph()
 	inFile.close();
 
 	gv->rearrange();
+	//gv = graphViewer;
+
+
 }
+
+
 
 int main() {
 
 	Graph<VertexInfo> g;
 	vector<VertexInfo> parks, gasStations;
+
 
 	initialise(g, parks, gasStations);
 	printGraph();

@@ -8,7 +8,98 @@
 #include <iostream>
 #include "Graph.h"
 #include "Utilities.h"
+#include <algorithm>
+
+
 using namespace std;
+
+template<class T>
+void printGraphPath(vector<T> points)
+{
+	GraphViewer *gv = new GraphViewer(600, 600, false);
+
+		gv->createWindow(600, 600);
+
+		gv->defineEdgeColor("blue");
+		gv->defineVertexColor("yellow");
+
+		for(unsigned int i = 0; i < points.size(); i++)
+		{
+			gv->setVertexColor(points.at(i).getId(), "green");
+		}
+
+		ifstream inFile;
+		//Ler o ficheiro nos.txt
+		inFile.open("nos.txt");
+
+		if (!inFile) {
+			cerr << "Unable to open file nos.txt";
+			exit(1);   // call system to stop
+		}
+
+		string line, label, idNo, X, Y;
+		int idN, x,y;
+
+
+		getline(inFile, idNo, ';');
+		getline(inFile, X, ';');
+		getline(inFile, Y, ';');
+		getline(inFile, label, ';');
+
+		while(inFile)
+		{
+			VertexInfo v;
+			idN = atoi(idNo.c_str());
+			x = atoi(X.c_str());
+			y = atoi(Y.c_str());
+
+			gv->addNode(idN,x,y);
+			gv->setVertexLabel(idN, label);
+
+			getline(inFile, idNo, ';');
+			getline(inFile, X, ';');
+			getline(inFile, Y, ';');
+			getline(inFile, label, ';');
+
+		}
+
+		inFile.close();
+
+
+		//Ler o ficheiro arestas.txt
+		inFile.open("arestas.txt");
+
+		if (!inFile) {
+			cerr << "Unable to open file arestas.txt";
+			exit(1);   // call system to stop
+		}
+
+		int idAresta=0;
+		int idNoOrigem=0;
+		int idNoDestino=0;
+
+		while(getline(inFile, line))
+		{
+			stringstream linestream(line);
+			string data;
+
+			linestream >> idAresta;
+
+			getline(linestream, data, ';');  // read up-to the first ; (discard ;).
+			linestream >> idNoOrigem;
+			getline(linestream, data, ';');  // read up-to the first ; (discard ;).
+			linestream >> idNoDestino;
+			gv->addEdge(idAresta,idNoOrigem,idNoDestino, EdgeType::UNDIRECTED);
+
+		}
+
+		inFile.close();
+
+		gv->rearrange();
+		//gv = graphViewer;
+
+
+}
 
 template<class T>
 
@@ -20,6 +111,7 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 	vector<T> bestParktoGas;
 	vector<T> bestParkToDest;
 	vector<T> bestParktoLoc;
+	vector<T> ids;
 	T bestPark;
 	T bestGasStation;
 
@@ -41,6 +133,7 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		path = g.getPath(parks[p], g.getVertexSet().at(destination)->getInfo()); //path between destination and park p
 		for (unsigned int z = 0; z < path.size()-1; z++)
 			distance += g.edgeCost(path[z].getId(),path[z+1].getId());
+
 		if (distance < bestDistParking){
 			bestDistParking = distance;
 			bestParkToDest = path;
@@ -65,7 +158,7 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		for(unsigned int k = 1; k < gasStations.size(); k++){
 			distance = 0;
 			g.dijkstraShortestPath(g.getVertexSet().at(gasStations[k].getId())->getInfo());
-			path = g.getPath(g.getVertexSet().at(location)->getInfo(), gasStations[k]);
+			path = g.getPath(gasStations[k], g.getVertexSet().at(location)->getInfo());
 			for(unsigned int j = 0; j < path.size()-1; j++)
 				distance += g.edgeCost(path[j].getId(), path[j+1].getId());
 
@@ -80,18 +173,20 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		//best gas station to best park
 		g.dijkstraShortestPath(bestGasStation);
 		bestParktoGas = g.getPath(bestGasStation, bestPark);
+
 		distance = 0;
 		for (unsigned int l = 0; l < path.size()-1; l++)
 			distance += g.edgeCost(path[l].getId(),path[l+1].getId());
 		gasToPark = distance;
+
 	}
 
 	else{
 		//location to the park
 		g.dijkstraShortestPath(g.getVertexSet().at(location)->getInfo());
 		bestParktoLoc = g.getPath(g.getVertexSet().at(location)->getInfo(), bestPark);
-		for (unsigned int l = 0; l < path.size()-1; l++)
-			distance += g.edgeCost(path[l].getId(),path[l+1].getId());
+		for (unsigned int l = 0; l < bestParktoLoc.size()-1; l++)
+			distance += g.edgeCost(bestParktoLoc[l].getId(),bestParktoLoc[l+1].getId());
 		bestDistLocation = distance;
 	}
 
@@ -99,8 +194,10 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		//between gas station and location
 		cout << "The closest gas station to your location is " << bestDistGasStation << " meters away." << endl;
 		cout << "To get there, you'll have to follow this path: " << endl;
+		reverse(bestPathGasToLoc.begin(), bestPathGasToLoc.end());
 		for (unsigned int l = 0; l < bestPathGasToLoc.size(); l++)
 		{
+			ids.push_back(bestPathGasToLoc.at(l));
 			if (l == bestPathGasToLoc.size()-1)
 				cout << bestPathGasToLoc[l].getLabel() << "." << endl;
 			else
@@ -108,10 +205,15 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		}
 
 		cout << "The closest park to your destination is " << bestPark.getLabel() << " and it is " << gasToPark << " meters away." << endl;
+		if(bestPark.getLabel() == "garage")
+			cout << "The price will be 1.5$/hour" << endl;
+		else if(bestPark.getLabel() == "parking lot")
+			cout << "The price will be 0.75$/hour" << endl;
 		cout << "After filling up your tank, you should follow this route: " << endl;
-		for (unsigned int l = 0; l < path.size(); l++)
+		for (unsigned int l = 0; l < bestParktoGas.size(); l++)
 		{
-			if (l == path.size()-1)
+			ids.push_back(bestParktoGas.at(l));
+			if (l == bestParktoGas.size()-1)
 				cout << bestParktoGas[l].getLabel() << "." << endl;
 			else
 				cout << bestParktoGas[l].getLabel() << ", ";
@@ -120,6 +222,7 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		cout << "To reach your destination, you'll have to follow this path, by foot: " << endl;
 		for (unsigned int l = 0; l < bestParkToDest.size(); l++)
 		{
+			ids.push_back(bestParkToDest.at(l));
 			if (l == bestParkToDest.size()-1)
 				cout << bestParkToDest[l].getLabel() << ". " << endl;
 			else
@@ -129,10 +232,15 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 	else{
 		//showing distance between location and park
 		cout << "The closest park to your destination is " << bestPark.getLabel() << " and it is " << bestDistLocation << " meters away." << endl;
+		if(bestPark.getLabel() == "garage")
+			cout << "The price will be 1.5$/hour" << endl;
+		else if(bestPark.getLabel() == "parking lot")
+			cout << "The price will be 0.75$/hour" << endl;
 		cout << "To get there, you'll have to follow this path: " << endl;
-		for (unsigned int l = 0; l < path.size(); l++)
+		for (unsigned int l = 0; l < bestParktoLoc.size(); l++)
 		{
-			if (l == path.size()-1)
+			ids.push_back(bestParktoLoc.at(l));
+			if (l == bestParktoLoc.size()-1)
 				cout << bestParktoLoc[l].getLabel() << "." << endl;
 			else
 				cout << bestParktoLoc[l].getLabel() << ", ";
@@ -143,6 +251,7 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 		cout << "To reach your destination, you'll have to follow this path, by foot: " << endl;
 		for (unsigned int l = 0; l < bestParkToDest.size(); l++)
 		{
+			ids.push_back(bestParkToDest[l]);
 			if (l == bestParkToDest.size()-1)
 				cout << bestParkToDest[l].getLabel() << ". " << endl;
 			else
@@ -151,6 +260,8 @@ void showPath(int gas,int location,int destination, Graph<T> &g, vector<T> &park
 	}
 
 
+	cout << "A map with the highlighted path will be displayed..." << endl;
+	printGraphPath(ids);
 
 	getchar();
 }
@@ -167,16 +278,22 @@ void menu(Graph<T> &g, vector<T> parks, vector<T> gasStations){
 	int location, destination, gas;
 	bool valid = false;
 	while(!valid){
+		retry:
 		cout << "Good day \n" << "Where are you?(choose the node id)\n";
 		showOptions(g);
 		cin >> location;
+		system("cls");
 		cout << "Where are you headed?(choose the node id)\n";
 		showOptions(g);
 		cin >> destination;
 		if (location != destination)
 			valid = true;
+		else
+			goto retry;
+		system("cls");
 		cout << "Do you wish to refill?\n1-Yes \n2-No \n";
 		cin >> gas;
+		system("cls");
 		showPath(gas, location, destination, g, parks, gasStations);
 	}
 }
