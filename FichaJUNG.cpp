@@ -5,9 +5,10 @@
 #include <iostream>
 #include <sstream>
 #include "Graph.h"
-#include "Menu.h"
 #include "Utilities.h"
 #include <cmath>
+#include "MenuGraphs.h"
+#include "MenuStrings.h"
 
 using namespace std;
 
@@ -17,6 +18,9 @@ void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations);
 
 class VertexInfo;
 
+void graphs();
+
+//initialises the graph
 template <class T>
 void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
 
@@ -109,11 +113,22 @@ void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
 }
 
 int main() {
+	int choice;
+	cout << "Do you want to work with graphs(0) or strings(1)?\n";
+	cout << "0->Graphs\n"; cout << "1->Strings\n";
+	cin >> choice;
+	if (choice == 0)
+		graphs();
+	else
+		menuStrings();
+
+	getchar();
+	return 0;
+}
+
+void graphs(){
 	Graph<VertexInfo> g;
 	vector<VertexInfo> parks, gasStations;
 	initialise(g, parks, gasStations);
-	menu(g, parks, gasStations);
-	getchar();
-	return 0;
-
+	menuGraphs(g, parks, gasStations);
 }
