@@ -51,12 +51,21 @@ void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
 		v.setY(atoi(y.c_str()));
 		v.setLabel(label);
 
-		if (label == "garage" || label == "parking lot")
+		if (label == "garage"){
+			v.setCost(3);
 			parks.push_back(v);
+		}
+		else if ( label == "parking lot"){
+			v.setCost(2);
+			parks.push_back(v);
+		}
 
-		if(label == "gas station")
+		else if(label == "gas station"){
+			v.setCost(1.50);
 			gasStations.push_back(v);
-
+		}
+		else
+			v.setCost(0); //anything else has 0 cost
 
 		g.addVertex(v);
 
@@ -97,7 +106,6 @@ void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
 		int distanceY = g.getVertexSet()[idSour]->getInfo().getY() - g.getVertexSet()[idDest]->getInfo().getY();
 
 		double weight = sqrt( pow(distanceX, 2) + pow (distanceY, 2));
-
 
 		g.addEdge(g.getVertexSet()[idSour]->getInfo(),g.getVertexSet()[idDest]->getInfo(), weight);
 		g.addEdge(g.getVertexSet()[idDest]->getInfo(),g.getVertexSet()[idSour]->getInfo(), weight);

@@ -15,15 +15,19 @@ class VertexInfo{
 
 	int idNo, X,Y;
 	string label;
+	float cost;
 public:
 	int getId() const;
 	int getX() const;
 	int getY() const;
 	string getLabel() const;
+	float getCost() const;
 	void setId(int id);
 	void setX(int x);
 	void setY(int y);
 	void setLabel(string label);
+	void setCost(float cost);
+
 };
 
 

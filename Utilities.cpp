@@ -19,6 +19,9 @@ int VertexInfo::getY() const{
 string VertexInfo::getLabel() const{
 	return this->label;
 }
+float VertexInfo::getCost() const{
+	return this->cost;
+}
 void VertexInfo::setId(int id)
 {
 	this->idNo = id;
@@ -35,5 +38,10 @@ void VertexInfo::setLabel(string label)
 {
 	this->label = label;
 }
+void VertexInfo::setCost(float cost)
+{
+	this->cost = cost;
+}
+
 
 
