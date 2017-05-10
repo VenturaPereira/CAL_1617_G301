@@ -18,7 +18,8 @@ void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations);
 
 class VertexInfo;
 
-void graphs();
+template <class T>
+void graphs(Graph<T> &g, vector<T> &parks, vector<T> &gasStations);
 
 //initialises the graph
 template <class T>
@@ -119,24 +120,26 @@ void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
 	inFile.close();
 
 }
+template <class T>
+void graphs(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
+	initialise(g, parks, gasStations);
+	menuGraphs(g, parks, gasStations);
+}
 
 int main() {
+	Graph<VertexInfo> g;
+	vector<VertexInfo> parks, gasStations;
 	int choice;
 	cout << "Do you want to work with graphs(0) or strings(1)?\n";
 	cout << "0->Graphs\n"; cout << "1->Strings\n";
 	cin >> choice;
 	if (choice == 0)
-		graphs();
+		graphs(g, parks, gasStations);
 	else
-		menuStrings();
+		menuStrings(g, parks);
 
 	getchar();
 	return 0;
 }
 
-void graphs(){
-	Graph<VertexInfo> g;
-	vector<VertexInfo> parks, gasStations;
-	initialise(g, parks, gasStations);
-	menuGraphs(g, parks, gasStations);
-}
+

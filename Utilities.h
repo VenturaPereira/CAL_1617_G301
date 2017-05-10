@@ -9,6 +9,7 @@
 #define UTILITIES_H_
 
 #include <string>
+#include <vector>
 using namespace std;
 
 class VertexInfo{
@@ -29,6 +30,9 @@ public:
 	void setCost(float cost);
 
 };
+int getEditDistanceOPT(string needle, string haystack);
+int getEditDistanceOT(string needle, string haystack);
+
 
 
 #endif /* UTILITIES_H_ */
