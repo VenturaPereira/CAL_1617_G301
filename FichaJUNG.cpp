@@ -18,9 +18,6 @@ void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations);
 
 class VertexInfo;
 
-template <class T>
-void graphs(Graph<T> &g, vector<T> &parks, vector<T> &gasStations);
-
 //initialises the graph
 template <class T>
 void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
@@ -86,55 +83,52 @@ void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
 		exit(1);   // call system to stop
 	}
 
-	string idEdge,idS,idD;
+	string idEdge,idS,idD, edgeName;
 
 
 	getline(inFile, idEdge, ';');
 	getline(inFile, idS, ';');
 	getline(inFile, idD, ';');
+	getline(inFile, edgeName, ';');
 
-
-	//each line in the format: idEdge;idSource;idDest
+	//each line in the format: idEdge;idSource;idDest;streetName
 	while(inFile)
 	{
-
 		int idE = atoi(idEdge.c_str());
 		int idSour = atoi(idS.c_str());
 		int idDest = atoi(idD.c_str());
-
 
 		int distanceX = g.getVertexSet()[idSour]->getInfo().getX() - g.getVertexSet()[idDest]->getInfo().getX();
 		int distanceY = g.getVertexSet()[idSour]->getInfo().getY() - g.getVertexSet()[idDest]->getInfo().getY();
 
 		double weight = sqrt( pow(distanceX, 2) + pow (distanceY, 2));
 
-		g.addEdge(g.getVertexSet()[idSour]->getInfo(),g.getVertexSet()[idDest]->getInfo(), weight);
-		g.addEdge(g.getVertexSet()[idDest]->getInfo(),g.getVertexSet()[idSour]->getInfo(), weight);
+		g.addEdge(g.getVertexSet()[idSour]->getInfo(),g.getVertexSet()[idDest]->getInfo(), weight, edgeName);
+		g.addEdge(g.getVertexSet()[idDest]->getInfo(),g.getVertexSet()[idSour]->getInfo(), weight, edgeName);
 
 		getline(inFile, idEdge, ';');
 		getline(inFile, idS, ';');
 		getline(inFile, idD, ';');
+		getline(inFile, edgeName, ';');
 
 	}
 
 	inFile.close();
 
 }
-template <class T>
-void graphs(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
-	initialise(g, parks, gasStations);
-	menuGraphs(g, parks, gasStations);
-}
+
 
 int main() {
 	Graph<VertexInfo> g;
 	vector<VertexInfo> parks, gasStations;
 	int choice;
+	initialise(g, parks, gasStations);
+
 	cout << "Do you want to work with graphs(0) or strings(1)?\n";
 	cout << "0->Graphs\n"; cout << "1->Strings\n";
 	cin >> choice;
 	if (choice == 0)
-		graphs(g, parks, gasStations);
+		menuGraphs(g, parks, gasStations);
 	else
 		menuStrings(g, parks);
 

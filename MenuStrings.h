@@ -21,23 +21,26 @@ template <class T>
 void menuStrings(Graph<T> &g, vector<T> &parks){
 	string street, district;
 	cout << "What is the district you're searching for?\n";
-	cin >> district;
+	getline(cin,district);
 
 	cout << "What is the street you're searching for?\n";
-	cin >> street;
+	getline(cin,street);
 
-	int choice;
+	int choice2;
 	cout << "Do you want to search for the street using Exact Search or Approximate Search?\n";
 	cout << "0->Exact Search\n"; cout << "1->Approximate Search\n";
-	cin >> choice;
-	if (choice == 0)
-		exact(g, district, street);
+
+	cin >> choice2;
+	if (choice2 == 0){
+		exact(g, district, street);}
 	else
 		approximate(g, parks, district, street);
 }
 
 template <class T>
-void exact(Graph<T> &g, string d, string s) {}
+void exact(Graph<T> &g, string d, string s) {
+	cout << "coiso";
+}
 
 
 template <class T>
@@ -48,17 +51,35 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
 	//if not found, return district and nearest streets to destination
 	//if found, search for street
 	int distance = 0;
-	int halfSize = s.size()  + 2; //tolerance
+	bool found = false;
+	//int halfSize = s.size()  + 2; //tolerance
 	for (int i = 0; i < g.getVertexSet().size(); i++){
-		for (int j = 0; j < g.getVertexSet()[i]->getAdj().size(); i++){
-			//distance = getEditDistanceOT(s, g.getVertexSet()[i]->getAdj()[j].name);
-			if (distance <= halfSize){
+		if (found)
+			break;
+		for (int j = 0; j < g.getVertexSet()[i]->getAdj().size(); j++){
+
+			cout << "edgeName: " <<  g.getVertexSet()[i]->getAdj()[j].getName() << endl;
+			cout << "string: " << s << endl;
+			distance = getEditDistanceOT(s, g.getVertexSet()[i]->getAdj()[j].getName());
+			cout << "distance: " << distance << endl;
+			if (distance <= 3){
 				VertexInfo v1 = g.getVertexSet()[i]->getInfo();
 				VertexInfo v2 = g.getVertexSet()[i]->getAdj()[j].getDest()->getInfo();
-				cout << "street found: there are the locations that connect it:\n";
+				cout << "Street found! These are the locations that connect it:\n";
 				cout << "From " <<  v1.getLabel() << " to " << v2.getLabel() << endl;
 				//show on the graphviewer
+				//if one of the nodes that "holds" the street is a parking lot or garage
 
+				if (v1.getLabel() == "parking lot" || v1.getLabel() == "garage"){
+					cout << "The closest park is a " <<  v1.getLabel() << " that connects the street ";
+					found = true;
+					break;
+				}
+				else if (v2.getLabel() == "parking lot" || v2.getLabel() == "garage"){
+					cout << "The closest park is a " <<  v2.getLabel() << " that connects the street ";
+					found = true;
+					break;
+				}
 				//closest park
 				double distance1 = 0, bestDistParking1, distance2 = 0, bestDistParking2;
 				vector<T> path1, path2;
@@ -117,9 +138,11 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
 				}
 
 				if (bestDistParking1 < bestDistParking2)
-					cout << "The closest park is a " << bestPark1.getLabel() << " and it's " << bestDistParking1 << " meters away";
+					cout << "The closest park is a " << bestPark1.getLabel() << " and it's " << bestDistParking1 << " meters away\n";
 				else
-					cout << "The closest park is a " << bestPark2.getLabel() << " and it's " << bestDistParking2 << " meters away";
+					cout << "The closest park is a " << bestPark2.getLabel() << " and it's " << bestDistParking2 << " meters away\n";
+				found = true;
+				break;
 			}
 		}
 		//if not found, return district and nearest streets to destination
