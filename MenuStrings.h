@@ -12,6 +12,12 @@
 #include <algorithm>
 #include "Graph.h"
 
+struct streetInfo{
+	VertexInfo v1;
+	VertexInfo v2;
+	string street;
+};
+
 template <class T>
 void exact(Graph<T> &g, string d, string s);
 template <class T>
@@ -42,6 +48,85 @@ void exact(Graph<T> &g, string d, string s) {
 	cout << "coiso";
 }
 
+template <class T>
+void nearestPark(Graph<T> &g,vector<T> &parks, VertexInfo v1, VertexInfo v2){
+
+	cout << "Street found! These are the locations that connect it:\n";
+	cout << "From " <<  v1.getLabel() << " to " << v2.getLabel() << endl;
+	//show on the graphviewer
+
+	//if one of the nodes that "holds" the street is a parking lot or garage
+	if (v1.getLabel() == "parking lot" || v1.getLabel() == "garage"){
+		cout << "The closest park is a " <<  v1.getLabel() << " that connects the street ";
+		return;
+	}
+	else if (v2.getLabel() == "parking lot" || v2.getLabel() == "garage"){
+		cout << "The closest park is a " <<  v2.getLabel() << " that connects the street ";
+		return;
+	}
+	//closest park, by comparing the closest park to each node
+	double distance1 = 0, bestDistParking1, distance2 = 0, bestDistParking2;
+	vector<T> path1, path2;
+	vector<T> bestParkToDest1, bestParkToDest2;
+	T bestPark1, bestPark2;
+
+	//park[0] to v1
+	g.dijkstraShortestPath(g.getVertexSet().at(parks[0].getId())->getInfo());
+	path1 = g.getPath(parks[0],v1);
+
+	for (unsigned int z = 0; z < path1.size()-1; z++)
+		distance1 += g.edgeCost(path1[z].getId(),path1[z+1].getId());
+
+	bestDistParking1 = distance1;
+	bestParkToDest1 = path1;
+	bestPark1 = parks[0];
+	//closest park to v1
+	for (unsigned int p = 1;  p < parks.size(); p++){
+		g.dijkstraShortestPath(g.getVertexSet().at(parks[p].getId())->getInfo());
+		path1 = g.getPath(parks[p], v1); //path between destination and park p
+		for (unsigned int z = 0; z < path1.size()-1; z++)
+			distance1 += g.edgeCost(path1[z].getId(),path1[z+1].getId());
+
+		if (distance1 < bestDistParking1){
+			bestDistParking1 = distance1;
+			bestParkToDest1 = path1;
+			bestPark1 = parks[p];
+		}
+	}
+
+	//park to v2
+	g.dijkstraShortestPath(g.getVertexSet().at(parks[0].getId())->getInfo());
+	path2 = g.getPath(parks[0],v2);
+
+	for (unsigned int z = 0; z < path2.size()-1; z++)
+		distance2 += g.edgeCost(path2[z].getId(),path2[z+1].getId());
+
+	bestDistParking2 = distance2;
+	bestParkToDest2 = path2;
+	bestPark2 = parks[0];
+
+	//closest park to v2
+	for (unsigned int p = 1;  p < parks.size(); p++){
+		distance2 = 0;
+		g.dijkstraShortestPath(g.getVertexSet().at(parks[p].getId())->getInfo());
+		path2 = g.getPath(parks[p], v2); //path between destination and park p
+		for (unsigned int z = 0; z < path2.size()-1; z++)
+			distance2 += g.edgeCost(path2[z].getId(),path2[z+1].getId());
+
+		if (distance2 < bestDistParking2){
+			bestDistParking2 = distance2;
+			bestParkToDest2 = path2;
+			bestPark2 = parks[p];
+		}
+	}
+
+	if (bestDistParking1 < bestDistParking2)
+		cout << "The closest park is a " << bestPark1.getLabel() << " and it's " << bestDistParking1 << " meters away\n";
+	else
+		cout << "The closest park is a " << bestPark2.getLabel() << " and it's " << bestDistParking2 << " meters away\n";
+
+}
+
 
 template <class T>
 void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
@@ -50,99 +135,32 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
 
 	//if not found, return district and nearest streets to destination
 	//if found, search for street
-	int distance = 0;
+	int distance = 0, graphSize =g.getVertexSet().size(), adjSize;
 	bool found = false;
-	//int halfSize = s.size()  + 2; //tolerance
-	for (int i = 0; i < g.getVertexSet().size(); i++){
+	vector<streetInfo> streetNames;
+	for (int i = 0; i < graphSize; i++){
 		if (found)
 			break;
-		for (int j = 0; j < g.getVertexSet()[i]->getAdj().size(); j++){
-
-			cout << "edgeName: " <<  g.getVertexSet()[i]->getAdj()[j].getName() << endl;
+		adjSize = g.getVertexSet()[i]->getAdj().size();
+		for (int j = 0; j < adjSize; j++){
+			string edgeName =  g.getVertexSet()[i]->getAdj()[j].getName();
+			cout << "edgeName: " << edgeName << endl;
 			cout << "string: " << s << endl;
-			distance = getEditDistanceOT(s, g.getVertexSet()[i]->getAdj()[j].getName());
-			cout << "distance: " << distance << endl;
-			if (distance <= 3){
-				VertexInfo v1 = g.getVertexSet()[i]->getInfo();
-				VertexInfo v2 = g.getVertexSet()[i]->getAdj()[j].getDest()->getInfo();
-				cout << "Street found! These are the locations that connect it:\n";
-				cout << "From " <<  v1.getLabel() << " to " << v2.getLabel() << endl;
-				//show on the graphviewer
-				//if one of the nodes that "holds" the street is a parking lot or garage
-
-				if (v1.getLabel() == "parking lot" || v1.getLabel() == "garage"){
-					cout << "The closest park is a " <<  v1.getLabel() << " that connects the street ";
-					found = true;
-					break;
-				}
-				else if (v2.getLabel() == "parking lot" || v2.getLabel() == "garage"){
-					cout << "The closest park is a " <<  v2.getLabel() << " that connects the street ";
-					found = true;
-					break;
-				}
-				//closest park
-				double distance1 = 0, bestDistParking1, distance2 = 0, bestDistParking2;
-				vector<T> path1, path2;
-				vector<T> bestParkToDest1, bestParkToDest2;
-				T bestPark1, bestPark2;
-
-				//park to v1
-				g.dijkstraShortestPath(g.getVertexSet().at(parks[0].getId())->getInfo());
-				path1 = g.getPath(parks[0],v1);
-
-				for (unsigned int z = 0; z < path1.size()-1; z++)
-					distance += g.edgeCost(path1[z].getId(),path1[z+1].getId());
-
-				bestDistParking1 = distance1;
-				bestParkToDest1 = path1;
-				bestPark1 = parks[0];
-
-				//closest park to v1
-				for (unsigned int p = 1;  p < parks.size(); p++){
-					distance = 0;
-					g.dijkstraShortestPath(g.getVertexSet().at(parks[p].getId())->getInfo());
-					path1 = g.getPath(parks[p], v1); //path between destination and park p
-					for (unsigned int z = 0; z < path1.size()-1; z++)
-						distance += g.edgeCost(path1[z].getId(),path1[z+1].getId());
-
-					if (distance < bestDistParking1){
-						bestDistParking1 = distance;
-						bestParkToDest1 = path1;
-						bestPark1 = parks[p];
-					}
-				}
-				//park to v2
-				g.dijkstraShortestPath(g.getVertexSet().at(parks[0].getId())->getInfo());
-				path2 = g.getPath(parks[0],v2);
-
-				for (unsigned int z = 0; z < path2.size()-1; z++)
-					distance += g.edgeCost(path2[z].getId(),path2[z+1].getId());
-
-				bestDistParking2 = distance2;
-				bestParkToDest2 = path2;
-				bestPark2 = parks[0];
-
-				//closest park to v2
-				for (unsigned int p = 1;  p < parks.size(); p++){
-					distance = 0;
-					g.dijkstraShortestPath(g.getVertexSet().at(parks[p].getId())->getInfo());
-					path2 = g.getPath(parks[p], v2); //path between destination and park p
-					for (unsigned int z = 0; z < path2.size()-1; z++)
-						distance += g.edgeCost(path2[z].getId(),path2[z+1].getId());
-
-					if (distance < bestDistParking2){
-						bestDistParking2 = distance;
-						bestParkToDest2 = path2;
-						bestPark2 = parks[p];
-					}
-				}
-
-				if (bestDistParking1 < bestDistParking2)
-					cout << "The closest park is a " << bestPark1.getLabel() << " and it's " << bestDistParking1 << " meters away\n";
-				else
-					cout << "The closest park is a " << bestPark2.getLabel() << " and it's " << bestDistParking2 << " meters away\n";
+			distance = getEditDistanceOT(s, edgeName);
+			VertexInfo v1 = g.getVertexSet()[i]->getInfo();
+			VertexInfo v2 = g.getVertexSet()[i]->getAdj()[j].getDest()->getInfo();
+			if (distance <= 4){
+				nearestPark(g,parks,v1,v2);
+				streetNames.clear();
 				found = true;
 				break;
+			}
+			else if (distance > 3 && distance < 6){
+				streetInfo s;
+				s.v1 = v1;
+				s.v2 = v2;
+				s.street = edgeName;
+				streetNames.push_back(s);
 			}
 		}
 		//if not found, return district and nearest streets to destination
@@ -153,6 +171,35 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
 		//2: type street name(no caps!)
 
 	}
+	//if the are multiple possible streets
+	if (streetNames.size() > 1)
+	{
+		bool valid = false;
+		int a;
+		while(!valid){
+			cout << "Is the street you're looking for one of these?\n(choose the number, if your street isn't found, type -1)\n";
+			for (unsigned int i = 0; i < streetNames.size(); i++)
+				cout << i << ": " << streetNames[i].street << endl;
+			cin >> a;
+			if (a == -1){
+				cout << "here are the closest streets\n";
+				valid = true;
+			}
+			else
+			{
+				cout << "Is " << streetNames[a].street << " the street you're looking for?(Y/N)?\n";
+				string ans;
+				cin >> ans;
+				if (ans == "Y"){
+					nearestPark(g,parks,streetNames[a].v1,streetNames[a].v2);
+					valid = true;
+				}
+				else if (ans == "N")
+					cout << "Let's try again\n";
+			}
+		}
+	}
+
 }
 
 
