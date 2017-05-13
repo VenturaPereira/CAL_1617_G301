@@ -13,85 +13,6 @@
 
 using namespace std;
 
-GraphViewer *gv = new GraphViewer(600, 600, false);
-
-//prints the graph
-void printGraphPath(){
-
-	gv->createWindow(1250, 1250);
-
-	gv->defineEdgeColor("blue");
-	gv->defineVertexColor("yellow");
-
-	ifstream inFile;
-	//Ler o ficheiro nos.txt
-	inFile.open("nos.txt");
-
-	if (!inFile) {
-		cerr << "Unable to open file nos.txt";
-		exit(1);   // call system to stop
-	}
-
-	string line, label, idNo, X, Y;
-	int idN, x,y;
-
-
-	getline(inFile, idNo, ';');
-	getline(inFile, X, ';');
-	getline(inFile, Y, ';');
-	getline(inFile, label, ';');
-
-	while(inFile)
-	{
-		VertexInfo v;
-		idN = atoi(idNo.c_str());
-		x = atoi(X.c_str());
-		y = atoi(Y.c_str());
-
-		gv->addNode(idN,x,y);
-		gv->setVertexLabel(idN, label);
-
-		getline(inFile, idNo, ';');
-		getline(inFile, X, ';');
-		getline(inFile, Y, ';');
-		getline(inFile, label, ';');
-
-	}
-
-	inFile.close();
-
-
-	//Ler o ficheiro arestas.txt
-	inFile.open("arestas.txt");
-
-	if (!inFile) {
-		cerr << "Unable to open file arestas.txt";
-		exit(1);   // call system to stop
-	}
-
-	int idAresta=0;
-	int idNoOrigem=0;
-	int idNoDestino=0;
-
-	while(getline(inFile, line))
-	{
-		stringstream linestream(line);
-		string data;
-
-		linestream >> idAresta;
-
-		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
-		linestream >> idNoOrigem;
-		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
-		linestream >> idNoDestino;
-		gv->addEdge(idAresta,idNoOrigem,idNoDestino, EdgeType::UNDIRECTED);
-
-	}
-
-	inFile.close();
-
-	gv->rearrange();
-}
 
 //paints the path that goes through a gas station
 template<class T>
@@ -286,10 +207,8 @@ void shortestPath(int gas,int location,int destination, Graph<T> &g, vector<T> &
 	}
 
 
-	cout << "A map with the highlighted path will be displayed..." << endl;
+	cout << "The map will be updated with the path..." << endl;
 	Sleep(3000);
-	printGraphPath();
-	Sleep(1000);
 	if (gas == 1)
 		printPathWithGas(bestPathGasToLoc, bestParktoGas, bestParkToDest);
 	else
@@ -297,7 +216,6 @@ void shortestPath(int gas,int location,int destination, Graph<T> &g, vector<T> &
 
 	getchar();
 }
-
 
 template<class T>
 void cheapestPath(int gas,int location,int destination, Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
@@ -358,10 +276,6 @@ void cheapestPath(int gas,int location,int destination, Graph<T> &g, vector<T> &
 
 		}
 	}
-
-
-	//the rest is the same
-
 
 	//distance to gas station, if chosen
 	if (gas == 1){
@@ -475,10 +389,8 @@ void cheapestPath(int gas,int location,int destination, Graph<T> &g, vector<T> &
 	}
 
 
-	cout << "A map with the highlighted path will be displayed..." << endl;
+	cout << "The map will be updated with the path..." << endl;
 	Sleep(3000);
-	printGraphPath();
-	Sleep(1000);
 	if (gas == 1)
 		printPathWithGas(bestPathGasToLoc, bestParktoGas, bestParkToDest);
 	else
@@ -501,6 +413,7 @@ void menuGraphs(Graph<T> &g, vector<T> parks, vector<T> gasStations){
 
 	int location, destination, gas, choice;
 	cout << "Good day \n" << "Where are you?(choose the node id)\n";
+	printGraphPath();
 	showOptions(g);
 	cin >> location;
 	cout << "Where are you headed?(choose the node id)\n";

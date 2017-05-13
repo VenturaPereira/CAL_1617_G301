@@ -99,3 +99,80 @@ int getEditDistanceOT(string needle, string haystack) {
 	return D[needle.length()];
 }
 
+//prints the graph
+void printGraphPath(){
+
+	gv->createWindow(1250, 1250);
+
+	gv->defineEdgeColor("blue");
+	gv->defineVertexColor("yellow");
+
+	ifstream inFile;
+	//Ler o ficheiro nos.txt
+	inFile.open("nos.txt");
+
+	if (!inFile) {
+		cerr << "Unable to open file nos.txt";
+		exit(1);   // call system to stop
+	}
+
+	string line, label, idNo, X, Y;
+	int idN, x,y;
+
+
+	getline(inFile, idNo, ';');
+	getline(inFile, X, ';');
+	getline(inFile, Y, ';');
+	getline(inFile, label, ';');
+
+	while(inFile)
+	{
+		VertexInfo v;
+		idN = atoi(idNo.c_str());
+		x = atoi(X.c_str());
+		y = atoi(Y.c_str());
+
+		gv->addNode(idN,x,y);
+		gv->setVertexLabel(idN, label);
+
+		getline(inFile, idNo, ';');
+		getline(inFile, X, ';');
+		getline(inFile, Y, ';');
+		getline(inFile, label, ';');
+
+	}
+
+	inFile.close();
+
+
+	//Ler o ficheiro arestas.txt
+	inFile.open("arestas.txt");
+
+	if (!inFile) {
+		cerr << "Unable to open file arestas.txt";
+		exit(1);   // call system to stop
+	}
+
+	int idAresta=0;
+	int idNoOrigem=0;
+	int idNoDestino=0;
+
+	while(getline(inFile, line))
+	{
+		stringstream linestream(line);
+		string data;
+
+		linestream >> idAresta;
+
+		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
+		linestream >> idNoOrigem;
+		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
+		linestream >> idNoDestino;
+		gv->addEdge(idAresta,idNoOrigem,idNoDestino, EdgeType::UNDIRECTED);
+
+	}
+
+	inFile.close();
+
+	gv->rearrange();
+}

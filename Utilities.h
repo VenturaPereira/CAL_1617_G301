@@ -10,7 +10,12 @@
 
 #include <string>
 #include <vector>
+#include "graphviewer.h"
+#include <fstream>
+#include <sstream>
 using namespace std;
+
+extern GraphViewer *gv;
 
 class VertexInfo{
 
@@ -33,6 +38,6 @@ public:
 int getEditDistanceOPT(string needle, string haystack);
 int getEditDistanceOT(string needle, string haystack);
 
-
+void printGraphPath();
 
 #endif /* UTILITIES_H_ */

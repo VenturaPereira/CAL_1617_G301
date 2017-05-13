@@ -52,9 +52,12 @@ template <class T>
 void nearestPark(Graph<T> &g,vector<T> &parks, VertexInfo v1, VertexInfo v2){
 
 	cout << "Street found! These are the locations that connect it:\n";
-	cout << "From " <<  v1.getLabel() << " to " << v2.getLabel() << endl;
-	//show on the graphviewer
-
+	cout << "From " <<  v1.getLabel() << "(blue) to " << v2.getLabel() << "(red)" << endl;
+	printGraphPath();
+	gv->setVertexColor(v1.getId(), "blue");
+	gv->setVertexColor(v2.getId(), "red");
+	gv->rearrange();
+	Sleep(5000);
 	//if one of the nodes that "holds" the street is a parking lot or garage
 	if (v1.getLabel() == "parking lot" || v1.getLabel() == "garage"){
 		cout << "The closest park is a " <<  v1.getLabel() << " that connects the street ";
@@ -149,7 +152,7 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
 			distance = getEditDistanceOT(s, edgeName);
 			VertexInfo v1 = g.getVertexSet()[i]->getInfo();
 			VertexInfo v2 = g.getVertexSet()[i]->getAdj()[j].getDest()->getInfo();
-			if (distance <= 4){
+			if (distance <= 3){
 				nearestPark(g,parks,v1,v2);
 				streetNames.clear();
 				found = true;
