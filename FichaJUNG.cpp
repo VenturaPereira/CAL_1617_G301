@@ -12,6 +12,7 @@
 using namespace std;
 
 GraphViewer *gv;
+
 class VertexInfo;
 
 //initialises the graph

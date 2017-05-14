@@ -156,6 +156,7 @@ void printGraphPath(){
 	int idAresta=0;
 	int idNoOrigem=0;
 	int idNoDestino=0;
+	string nomeAresta;
 
 	while(getline(inFile, line))
 	{
@@ -168,8 +169,10 @@ void printGraphPath(){
 		linestream >> idNoOrigem;
 		getline(linestream, data, ';');  // read up-to the first ; (discard ;).
 		linestream >> idNoDestino;
+		getline(linestream,nomeAresta);
+		nomeAresta = nomeAresta.substr(1, nomeAresta.size()-2);
 		gv->addEdge(idAresta,idNoOrigem,idNoDestino, EdgeType::UNDIRECTED);
-
+		gv->setEdgeLabel(idAresta, nomeAresta);
 	}
 
 	inFile.close();
