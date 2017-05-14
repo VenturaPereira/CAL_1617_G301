@@ -183,7 +183,7 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
 				cout << i << ": " << streetNames[i].street << endl;
 			cin >> a;
 			if (a == -1){
-				cout << "here are the closest streets\n";
+				cout << "That street does not exist\n";
 				valid = true;
 			}
 			else

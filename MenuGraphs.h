@@ -95,14 +95,14 @@ void shortestPath(int gas,int location,int destination, Graph<T> &g, vector<T> &
 			bestPark = parks[p];
 		}
 	}
+
 	//distance to gas station, if chosen
+
 	if (gas == 1){
 		g.dijkstraShortestPath(g.getVertexSet().at(gasStations[0].getId())->getInfo());
-		path = g.getPath( g.getVertexSet().at(location)->getInfo(), gasStations[0]);
-
-		for(unsigned int k = 0; k < path.size(); k++)
+		path = g.getPath(g.getVertexSet().at(location)->getInfo(), gasStations[0]);
+		for(unsigned int k = 0; k < path.size()-1; k++)
 			distance += g.edgeCost(path[k].getId(),path[k+1].getId());
-
 		bestDistGasStation = distance;
 		bestPathGasToLoc = path;
 		bestGasStation = gasStations[0];
@@ -111,6 +111,7 @@ void shortestPath(int gas,int location,int destination, Graph<T> &g, vector<T> &
 			distance = 0;
 			g.dijkstraShortestPath(g.getVertexSet().at(gasStations[k].getId())->getInfo());
 			path = g.getPath(gasStations[k], g.getVertexSet().at(location)->getInfo());
+
 			for(unsigned int j = 0; j < path.size()-1; j++)
 				distance += g.edgeCost(path[j].getId(), path[j+1].getId());
 
@@ -145,7 +146,6 @@ void shortestPath(int gas,int location,int destination, Graph<T> &g, vector<T> &
 	if (gas == 1){
 		//between gas station and location
 		cout << "The closest gas station to your location is " << bestDistGasStation << " meters away." << endl;
-		cout << "We estimate it will cost you around " << bestGasStation.getCost() << " € to refill the tank\n";
 		cout << "To get there, you'll have to follow this path: " << endl;
 		reverse(bestPathGasToLoc.begin(), bestPathGasToLoc.end());
 		for (unsigned int l = 0; l < bestPathGasToLoc.size(); l++)
@@ -157,8 +157,11 @@ void shortestPath(int gas,int location,int destination, Graph<T> &g, vector<T> &
 				cout << bestPathGasToLoc[l].getLabel() << ", ";
 		}
 
-		cout << "The closest park to your destination is a " << bestPark.getLabel() << " and it is " << gasToPark << " meters away.\n";
-		cout << "The price will be " << bestPark.getCost() << "€/hour\n";
+		cout << "The closest park to your destination is " << bestPark.getLabel() << " and it is " << gasToPark << " meters away." << endl;
+		if(bestPark.getLabel() == "garage")
+			cout << "The price will be 1.5$/hour" << endl;
+		else if(bestPark.getLabel() == "parking lot")
+			cout << "The price will be 0.75$/hour" << endl;
 		cout << "After filling up your tank, you should follow this route: " << endl;
 		for (unsigned int l = 0; l < bestParktoGas.size(); l++)
 		{
@@ -182,7 +185,10 @@ void shortestPath(int gas,int location,int destination, Graph<T> &g, vector<T> &
 	else{
 		//showing distance between location and park
 		cout << "The closest park to your destination is " << bestPark.getLabel() << " and it is " << bestDistLocation << " meters away." << endl;
-		cout << "The price will be " << bestPark.getCost() << "€/hour\n";
+		if(bestPark.getLabel() == "garage")
+			cout << "The price will be 1.5$/hour" << endl;
+		else if(bestPark.getLabel() == "parking lot")
+			cout << "The price will be 0.75$/hour" << endl;
 		cout << "To get there, you'll have to follow this path: " << endl;
 		for (unsigned int l = 0; l < bestParktoLoc.size(); l++)
 		{
@@ -282,7 +288,7 @@ void cheapestPath(int gas,int location,int destination, Graph<T> &g, vector<T> &
 		g.dijkstraShortestPath(g.getVertexSet().at(gasStations[0].getId())->getInfo());
 		path = g.getPath( g.getVertexSet().at(location)->getInfo(), gasStations[0]);
 
-		for(unsigned int k = 0; k < path.size(); k++)
+		for(unsigned int k = 0; k < path.size()-1; k++)
 			distance += g.edgeCost(path[k].getId(),path[k+1].getId());
 
 		bestDistGasStation = distance;
@@ -411,7 +417,7 @@ void showOptions(Graph<T> &g){
 template<class T>
 void menuGraphs(Graph<T> &g, vector<T> parks, vector<T> gasStations){
 
-	int location, destination, gas, choice;
+	int location, destination, choice, gas;
 	cout << "Good day \n" << "Where are you?(choose the node id)\n";
 	printGraphPath();
 	showOptions(g);
