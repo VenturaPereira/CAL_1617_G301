@@ -25,10 +25,27 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s);
 
 template <class T>
 void menuStrings(Graph<T> &g, vector<T> &parks){
-	string street, district;
-	cout << "What is the district you're searching for?\n";
-	getline(cin,district);
+	string street, district, map, go;
+	//cout << "What is the district you're searching for?\n";
+		getline(cin,district);
 
+	/*bool found = false;
+	while(!found){
+		cout << "Do you want to check the map?\n";
+		cin >> map;
+
+		if (map == "Y" || map == "y" || map == "YES" || map == "yes" || map == "Yes")
+
+		cout << "Did you find the street?(Y/N)\n";
+		cin >> go;
+		if (go == "Y" || go == "y" || go == "YES" || go == "yes" || go == "Yes")
+			found = true;
+		else
+			cout << "Let's try again\n";
+
+	}*/
+	cout << "Here's the map:\n";
+	printGraphPath();
 	cout << "What is the street you're searching for?\n";
 	getline(cin,street);
 
@@ -60,11 +77,11 @@ void nearestPark(Graph<T> &g,vector<T> &parks, VertexInfo v1, VertexInfo v2){
 	Sleep(5000);
 	//if one of the nodes that "holds" the street is a parking lot or garage
 	if (v1.getLabel() == "parking lot" || v1.getLabel() == "garage"){
-		cout << "The closest park is a " <<  v1.getLabel() << " that connects the street ";
+		cout << "The closest park is a " <<  v1.getLabel() << " that connects the street\n";
 		return;
 	}
 	else if (v2.getLabel() == "parking lot" || v2.getLabel() == "garage"){
-		cout << "The closest park is a " <<  v2.getLabel() << " that connects the street ";
+		cout << "The closest park is a " <<  v2.getLabel() << " that connects the street\n";
 		return;
 	}
 	//closest park, by comparing the closest park to each node
@@ -163,6 +180,7 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
 				s.street = edgeName;
 				streetNames.push_back(s);
 			}
+
 		}
 		//if not found, return district and nearest streets to destination
 
@@ -172,9 +190,8 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
 		//2: type street name(no caps!)
 
 	}
-	//if the are multiple possible streets
-	if (streetNames.size() > 1)
-	{
+	//if there are multiple possible streets
+	if (streetNames.size() > 1)	{
 		bool valid = false;
 		int a;
 		while(!valid){
@@ -186,20 +203,21 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
 				cout << "That street does not exist\n";
 				valid = true;
 			}
-			else
-			{
+			else {
 				cout << "Is " << streetNames[a].street << " the street you're looking for?(Y/N)?\n";
 				string ans;
 				cin >> ans;
-				if (ans == "Y"){
+				if (ans == "Y" || ans == "y" || ans == "YES" || ans == "yes" || ans == "Yes"){
 					nearestPark(g,parks,streetNames[a].v1,streetNames[a].v2);
 					valid = true;
 				}
-				else if (ans == "N")
+				else if (ans == "N" || ans == "n" || ans == "NO" || ans == "no" || ans == "No")
 					cout << "Let's try again\n";
 			}
 		}
 	}
+	else if (streetNames.size() == 0 && !found)
+		cout << "You'll have to be more specific. Try again later...\n";
 
 }
 
