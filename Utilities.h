@@ -36,7 +36,7 @@ public:
 
 };
 int getEditDistanceOPT(string needle, string haystack);
-int getEditDistanceOT(string needle, string haystack);
+int editDistance(string pattern, string text);
 
 void printGraphPath();
 

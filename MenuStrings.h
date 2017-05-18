@@ -164,7 +164,7 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
 		adjSize = g.getVertexSet()[i]->getAdj().size();
 		for (int j = 0; j < adjSize; j++){
 			string edgeName =  g.getVertexSet()[i]->getAdj()[j].getName();
-			distance = getEditDistanceOT(s, edgeName);
+			distance = editDistance(s, edgeName);
 			VertexInfo v1 = g.getVertexSet()[i]->getInfo();
 			VertexInfo v2 = g.getVertexSet()[i]->getAdj()[j].getDest()->getInfo();
 			if (distance <= 3){
