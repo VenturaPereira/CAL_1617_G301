@@ -1,20 +1,17 @@
 #include <cstdio>
 #include <string>
 #include "graphviewer.h"
-#include <fstream>
 #include <iostream>
-#include <sstream>
 #include "Graph.h"
 #include "Utilities.h"
 #include <cmath>
 #include "MenuGraphs.h"
 #include "MenuStrings.h"
 
+
 using namespace std;
 
-
-template <class T>
-void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations);
+GraphViewer *gv;
 
 class VertexInfo;
 
@@ -119,6 +116,7 @@ void initialise(Graph<T> &g, vector<T> &parks, vector<T> &gasStations){
 
 
 int main() {
+	gv = new GraphViewer(600, 600, false);
 	Graph<VertexInfo> g;
 	vector<VertexInfo> parks, gasStations;
 	int choice;
