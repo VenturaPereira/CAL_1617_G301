@@ -63,56 +63,31 @@ void menuStrings(Graph<T> &g, vector<T> &parks){
 
 template <class T>
 void exact(Graph<T> &g, string d, string s) {
-	int j= -1;
-	while(j < 0 && j> g.getVertexSet().size()){
-		system("cls");
-		for(int i=0; i < g.getNumVertex(); i++){
-			cout << g.getVertexSet()[i]->getAdj()[j].getName() << endl;
+	vector<string>streets;
+	bool found = false;
+	int adjSize;
+	for(unsigned int i =0; i <g.getVertexSet().size(); i++){
+		adjSize = g.getVertexSet()[i]->getAdj().size();
+		for(int j =0; j < adjSize; j++){
+			string edgName = g.getVertexSet()[i]->getAdj()[j].getName();
+			streets.push_back(edgName);
 		}
-		cin >> j;
 	}
-	system("cls");
-	string search;
-	cin.ignore();
-	getline(cin, search);
-    vector<string>words;
-    int last_space =0;
-    for(int i=0; i < search.size(); i++){
-    	if(search[i] == ' ' || i+1 == search.size()){
-    		if(last_space != i){
-    			int size = i - last_space;
-    			if(i+1 == search.size()) size++;
-    			words.push_back(search.substr(last_space, size));
-    		}
-    		last_space= i+1;
-    	}
-    }
-    system("cls");
-    vector<string> res = g.bfs(g.getVertexSet()[j]->getInfo().getId());
-    vector<int>num;
-    for(unsigned int a =0; a < res.size();  a++){
-    	int value = 0;
-    	for(unsigned int i = 0; i < words.size(); i++){
-    		value += kmp(res[a], words[i]);
-    	}
-    	num.push_back(value);
-    }
-    int maxValue = -1;
-    for(unsigned int j = 0; j < num.size(); j++){
-    	if(num[j]>maxValue){
-    		maxValue = num[j];
-    	}
-    }
-    for(;maxValue>0; maxValue--){
-    	for(unsigned int order =0; order < res.size(); order++){
-    		if(num[order] == maxValue){
-    			cout << res[order] << endl;
+	for(unsigned int a =0; a < streets.size();a++){
+		if((kmp(streets.at(a),s)) != 0){
+			cout << streets[a];
+			found = true;
+		}
+	}
 
-    		}
-    	}
-    }
-    cout << "\n\n";
-    system("pause");
+	 if(!found){
+		 cout << "The street you asked for isn't in our data base.";
+
+	}
+
+
+
+
 }
 
 template <class T>
