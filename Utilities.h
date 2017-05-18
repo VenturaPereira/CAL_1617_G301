@@ -34,5 +34,8 @@ int getEditDistanceOPT(string needle, string haystack);
 int getEditDistanceOT(string needle, string haystack);
 
 
+void pre_kmp(string pattern, vector<int> & prefix);
+
+int kmp(string text, string pattern);
 
 #endif /* UTILITIES_H_ */

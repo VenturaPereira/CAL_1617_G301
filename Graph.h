@@ -47,7 +47,7 @@ public:
 
 	int getDist() const;
 	int getIndegree() const;
-	vector<Edge<T>> getAdj() const;
+	vector< Edge<T> > getAdj() const;
 
 	bool operator<(const Vertex<T> vertex);
 
@@ -115,7 +115,7 @@ int Vertex<T>::getIndegree() const {
 
 
 template <class T>
-vector<Edge<T>> Vertex<T>::getAdj() const{
+vector< Edge<T> > Vertex<T>::getAdj() const{
 	return this->adj;
 }
 
