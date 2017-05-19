@@ -20,7 +20,7 @@ struct streetInfo{
 };
 
 template <class T>
-void exact(Graph<T> &g, string d, string s);
+void exact(Graph<T> &g, vector<T> &parks, string d, string s);
 template <class T>
 void approximate(Graph<T> &g, vector<T> &parks, string d, string s);
 
@@ -28,7 +28,7 @@ template <class T>
 void menuStrings(Graph<T> &g, vector<T> &parks){
 	string street, district, map, go;
 	//cout << "What is the district you're searching for?\n";
-		getline(cin,district);
+	getline(cin,district);
 
 	/*bool found = false;
 	while(!found){
@@ -56,35 +56,67 @@ void menuStrings(Graph<T> &g, vector<T> &parks){
 
 	cin >> choice2;
 	if (choice2 == 0){
-		exact(g, district, street);}
+		exact(g, parks, district, street);}
 	else
 		approximate(g, parks, district, street);
 }
 
 template <class T>
-void exact(Graph<T> &g, string d, string s) {
-	vector<string>streets;
-	bool found = false;
-	int adjSize;
-	for(unsigned int i =0; i <g.getVertexSet().size(); i++){
+void exact(Graph<T> &g, vector<T> &parks, string d, string str) {
+	vector<streetInfo> streets, foundStreets;
+	int adjSize, graphSize =g.getVertexSet().size();
+	bool found;
+	for(int i =0; i < graphSize; i++){
 		adjSize = g.getVertexSet()[i]->getAdj().size();
 		for(int j =0; j < adjSize; j++){
-			string edgName = g.getVertexSet()[i]->getAdj()[j].getName();
-			streets.push_back(edgName);
+			found = false;
+			streetInfo s;
+			s.v1 = g.getVertexSet()[i]->getInfo();
+			s.v2  = g.getVertexSet()[i]->getAdj()[j].getDest()->getInfo();
+			s.street = g.getVertexSet()[i]->getAdj()[j].getName();
+			for (unsigned int i = 0; i < streets.size(); i++)
+				if (streets[i].street == s.street){
+					found = true;
+					break;
+				}
+			if (!found)
+				streets.push_back(s);
 		}
 	}
-	for(unsigned int a =0; a < streets.size();a++){
-		if((kmp(streets.at(a),s)) != 0){
-			cout << streets[a];
+	for(unsigned int a = 0; a < streets.size(); a++)
+		if((kmp(streets.at(a).street,str)) != 0){
+			foundStreets.push_back(streets.at(a));
 			found = true;
 		}
+
+	if(!found)
+		cout << "The street you asked for isn't in our data base.";
+
+	else{
+		bool valid = false;
+		int a;
+		while(!valid){
+			cout << "Is the street you're looking for one of these?\n(choose the number, if your street isn't found, type -1)\n";
+			for (unsigned int i = 0; i < foundStreets.size(); i++)
+				cout << i << ": " << foundStreets[i].street << endl;
+			cin >> a;
+			if (a == -1){
+				cout << "That street does not exist\n";
+				valid = true;
+			}
+			else {
+				cout << "Is " << foundStreets[a].street << " the street you're looking for?(Y/N)?\n";
+				string ans;
+				cin >> ans;
+				if (ans == "Y" || ans == "y" || ans == "YES" || ans == "yes" || ans == "Yes"){
+					nearestPark(g,parks,foundStreets[a].v1,foundStreets[a].v2);
+					valid = true;
+				}
+				else if (ans == "N" || ans == "n" || ans == "NO" || ans == "no" || ans == "No")
+					cout << "Let's try again\n";
+			}
+		}
 	}
-
-	 if(!found){
-		 cout << "The street you asked for isn't in our data base.";
-
-	}
-
 
 
 
@@ -95,7 +127,6 @@ void nearestPark(Graph<T> &g,vector<T> &parks, VertexInfo v1, VertexInfo v2){
 
 	cout << "Street found! These are the locations that connect it:\n";
 	cout << "From " <<  v1.getLabel() << "(blue) to " << v2.getLabel() << "(red)" << endl;
-	printGraphPath();
 	gv->setVertexColor(v1.getId(), "blue");
 	gv->setVertexColor(v2.getId(), "red");
 	gv->rearrange();
@@ -174,49 +205,70 @@ void nearestPark(Graph<T> &g,vector<T> &parks, VertexInfo v1, VertexInfo v2){
 
 
 template <class T>
-void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
+void approximate(Graph<T> &g, vector<T> &parks, string d, string str){
 
-	//search district d
-
-	//if not found, return district and nearest streets to destination
-	//if found, search for street
 	int distance = 0, graphSize =g.getVertexSet().size(), adjSize;
 	bool found = false;
-	vector<streetInfo> streetNames;
+	vector<streetInfo> similarStreetNames, streetNames;
 	for (int i = 0; i < graphSize; i++){
-		if (found)
-			break;
 		adjSize = g.getVertexSet()[i]->getAdj().size();
 		for (int j = 0; j < adjSize; j++){
 			string edgeName =  g.getVertexSet()[i]->getAdj()[j].getName();
-			distance = editDistance(s, edgeName);
-			VertexInfo v1 = g.getVertexSet()[i]->getInfo();
-			VertexInfo v2 = g.getVertexSet()[i]->getAdj()[j].getDest()->getInfo();
-			if (distance <= 3){
-				nearestPark(g,parks,v1,v2);
-				streetNames.clear();
-				found = true;
-				break;
-			}
-			else if (distance > 3 && distance < 6){
-				streetInfo s;
-				s.v1 = v1;
-				s.v2 = v2;
-				s.street = edgeName;
-				streetNames.push_back(s);
-			}
+			distance = editDistance(str, edgeName);
+			streetInfo s;
+			s.v1 = g.getVertexSet()[i]->getInfo();
+			s.v2 = g.getVertexSet()[i]->getAdj()[j].getDest()->getInfo();
+			s.street = edgeName;
 
+			if (distance <= 5){
+				for (unsigned int i = 0; i < similarStreetNames.size(); i++)
+					if (similarStreetNames[i].street == s.street){
+						found = true;
+						break;
+					}
+				if (!found)
+					similarStreetNames.push_back(s);
+
+			}
+			else if (distance > 5 && edgeName.size() > str.size() ){
+				for (unsigned int i = 0; i < similarStreetNames.size(); i++)
+					if (streetNames[i].street == s.street){
+						found = true;
+						break;
+					}
+				if (!found)
+					streetNames.push_back(s);
+			}
 		}
-		//if not found, return district and nearest streets to destination
-
-		//idea:
-		//find district and then give 2 options:
-		//1: list of all streets and then choose the street
-		//2: type street name(no caps!)
-
+	}
+	//if there are similar possible streets
+	if (similarStreetNames.size() > 0)	{
+		bool valid = false;
+		int a;
+		while(!valid){
+			cout << "Is the street you're looking for one of these?\n(choose the number, if your street isn't found, type -1)\n";
+			for (unsigned int i = 0; i < similarStreetNames.size(); i++)
+				cout << i << ": " << similarStreetNames[i].street << endl;
+			cin >> a;
+			if (a == -1){
+				cout << "That street does not exist\n";
+				valid = true;
+			}
+			else {
+				cout << "Is " << similarStreetNames[a].street << " the street you're looking for?(Y/N)?\n";
+				string ans;
+				cin >> ans;
+				if (ans == "Y" || ans == "y" || ans == "YES" || ans == "yes" || ans == "Yes"){
+					nearestPark(g,parks,similarStreetNames[a].v1,similarStreetNames[a].v2);
+					valid = true;
+				}
+				else if (ans == "N" || ans == "n" || ans == "NO" || ans == "no" || ans == "No")
+					cout << "Let's try again\n";
+			}
+		}
 	}
 	//if there are multiple possible streets
-	if (streetNames.size() > 1)	{
+	else {
 		bool valid = false;
 		int a;
 		while(!valid){
@@ -241,8 +293,6 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s){
 			}
 		}
 	}
-	else if (streetNames.size() == 0 && !found)
-		cout << "You'll have to be more specific. Try again later...\n";
 
 }
 
