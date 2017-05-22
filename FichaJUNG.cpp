@@ -122,8 +122,8 @@ int main() {
 	int choice;
 	initialise(g, parks, gasStations);
 
-	cout << "Do you want to work with graphs(0) or strings(1)?\n";
-	cout << "0->Graphs\n"; cout << "1->Strings\n";
+	cout << "Do you want to search for a parking spot(0) or a street(1)?\n";
+	cout << "0->Parking\n"; cout << "1->Street\n";
 	cin >> choice;
 	if (choice == 0)
 		menuGraphs(g, parks, gasStations);

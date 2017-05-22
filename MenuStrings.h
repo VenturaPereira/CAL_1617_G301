@@ -27,24 +27,7 @@ void approximate(Graph<T> &g, vector<T> &parks, string d, string s);
 template <class T>
 void menuStrings(Graph<T> &g, vector<T> &parks){
 	string street, district, map, go;
-	//cout << "What is the district you're searching for?\n";
 	getline(cin,district);
-
-	/*bool found = false;
-	while(!found){
-		cout << "Do you want to check the map?\n";
-		cin >> map;
-
-		if (map == "Y" || map == "y" || map == "YES" || map == "yes" || map == "Yes")
-
-		cout << "Did you find the street?(Y/N)\n";
-		cin >> go;
-		if (go == "Y" || go == "y" || go == "YES" || go == "yes" || go == "Yes")
-			found = true;
-		else
-			cout << "Let's try again\n";
-
-	}*/
 	cout << "Here's the map:\n";
 	printGraphPath();
 	cout << "What is the street you're searching for?\n";
@@ -118,8 +101,6 @@ void exact(Graph<T> &g, vector<T> &parks, string d, string str) {
 		}
 	}
 
-
-
 }
 
 template <class T>
@@ -134,10 +115,12 @@ void nearestPark(Graph<T> &g,vector<T> &parks, VertexInfo v1, VertexInfo v2){
 	//if one of the nodes that "holds" the street is a parking lot or garage
 	if (v1.getLabel() == "parking lot" || v1.getLabel() == "garage"){
 		cout << "The closest park is a " <<  v1.getLabel() << " that connects the street\n";
+		cout << "The price will be " << v1.getCost() << "€/hour\n";
 		return;
 	}
 	else if (v2.getLabel() == "parking lot" || v2.getLabel() == "garage"){
 		cout << "The closest park is a " <<  v2.getLabel() << " that connects the street\n";
+		cout << "The price will be " << v2.getCost() << "€/hour\n";
 		return;
 	}
 	//closest park, by comparing the closest park to each node
@@ -197,9 +180,9 @@ void nearestPark(Graph<T> &g,vector<T> &parks, VertexInfo v1, VertexInfo v2){
 	}
 
 	if (bestDistParking1 < bestDistParking2)
-		cout << "The closest park is a " << bestPark1.getLabel() << " and it's " << bestDistParking1 << " meters away\n";
+		cout << "The closest park is a " << bestPark1.getLabel() << " and it's " << bestDistParking1 << " meters away\n"  << "The price will be " << bestPark1.getCost() << "€/hour\n";
 	else
-		cout << "The closest park is a " << bestPark2.getLabel() << " and it's " << bestDistParking2 << " meters away\n";
+		cout << "The closest park is a " << bestPark2.getLabel() << " and it's " << bestDistParking2 << " meters away\n"  << "The price will be " << bestPark2.getCost() << "€/hour\n";
 
 }
 
